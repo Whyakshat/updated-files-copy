@@ -1,0 +1,5266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fresh Plate & Co — Premium Meals</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --black: #1d1272;
+      --gold: #ffa7c3;
+      --gold-lt: #bb93c7;
+      --c: #c5aed3;
+      --cream2: #f6c1ff;
+      --green: #323131;
+      --green-lt: #ffffff;
+      --red: #4f3e61;
+      --white: #e6d1d1e0;
+      --text-dk: #0b0628;
+      --text-md: #ff02e6;
+      --serif: 'Playfair Display', serif;
+      --sans: 'DM Sans', sans-serif;
+      --display: 'Bebas Neue', cursive;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--text-dk);
+      overflow-x: hidden
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 52px;
+      background: rgba(10, 9, 8, 0.88);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: padding .3s
+    }
+
+    nav.scrolled {
+      padding: 0 40px
+    }
+
+    .nav-logo {
+      font-family: var(--display);
+      font-size: 17px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.88);
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      flex-shrink: 0
+    }
+
+    .nav-logo span {
+      color: rgba(255,255,255,0.28);
+      margin: 0 5px;
+      font-weight: 300
+    }
+
+    /* Centered links */
+    .nav-links {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      align-items: center
+    }
+
+    .nav-links a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+      text-decoration: none;
+      transition: color .2s;
+      white-space: nowrap
+    }
+
+    .nav-links a:hover {
+      color: rgba(255,255,255,0.9)
+    }
+
+    /* ── 3-DOTS (Apple style) ── */
+    .nav-dots-wrap {
+      position: relative;
+      list-style: none;
+      flex-shrink: 0
+    }
+
+    .nav-dots-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3.5px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: background .2s
+    }
+
+    .nav-dots-btn:hover {
+      background: rgba(255,255,255,0.08)
+    }
+
+    .nav-dots-btn .dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      transition: background .2s
+    }
+
+    .nav-dots-btn:hover .dot {
+      background: rgba(255,255,255,0.9)
+    }
+
+    /* Apple-style dropdown */
+    .nav-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: rgba(28, 28, 30, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 5px;
+      min-width: 180px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.55), 0 0 0 0.5px rgba(255,255,255,0.05);
+      animation: dropIn .18s cubic-bezier(0.4,0,0.2,1)
+    }
+
+    @keyframes dropIn {
+      from { opacity:0; transform: translateY(-5px) scale(0.98) }
+      to   { opacity:1; transform: none }
+    }
+
+    .nav-dropdown.open {
+      display: flex
+    }
+
+    .nav-dropdown a,
+    .nav-dropdown button.dd-btn {
+      display: block;
+      width: 100%;
+      padding: 9px 13px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0;
+      text-transform: none;
+      text-decoration: none;
+      color: rgba(255,255,255,0.85);
+      transition: background .12s;
+      cursor: pointer;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: -apple-system, var(--sans)
+    }
+
+    .nav-dropdown a:hover,
+    .nav-dropdown button.dd-btn:hover {
+      background: rgba(255,255,255,0.08)
+    }
+
+    .nav-dropdown .dd-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 3px 8px
+    }
+
+    .nav-dropdown .dd-username-row {
+      padding: 8px 13px 4px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0;
+      text-transform: none
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(201, 148, 42, 0.1) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(42, 87, 50, 0.14) 0%, transparent 50%)
+    }
+
+    .hero-grain {
+      position: absolute;
+      inset: 0;
+      opacity: .4;
+      animation: grain 1.4s steps(2) infinite;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")
+    }
+
+    @keyframes grain {
+
+      0%,
+      100% {
+        transform: translate(0, 0)
+      }
+
+      33% {
+        transform: translate(-3px, 2px)
+      }
+
+      66% {
+        transform: translate(2px, -2px)
+      }
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 980px;
+      padding: 0 40px
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .8s .2s forwards
+    }
+
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(90px, 14vw, 170px);
+      line-height: .86;
+      color: var(--white);
+      margin-bottom: 26px;
+      opacity: 0;
+      animation: fadeUp .9s .35s forwards
+    }
+
+    .hero-title span {
+      color: var(--gold)
+    }
+
+    .hero-subtitle {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(18px, 2vw, 24px);
+      color: rgba(255, 255, 255, .5);
+      margin-bottom: 52px;
+      opacity: 0;
+      animation: fadeUp .9s .5s forwards
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp .9s .65s forwards
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--black);
+      padding: 16px 44px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background .2s, transform .15s
+    }
+
+    .btn-gold:hover {
+      background: var(--gold-lt);
+      transform: translateY(-2px)
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--white);
+      padding: 16px 44px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color .2s, color .2s, transform .15s
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-2px)
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-strip {
+      background: #000000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      padding: 14px 0;
+    }
+
+    .marquee-inner {
+      display: flex;
+      align-items: center;
+      animation: marquee 28s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-inner span {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+      padding: 0 24px;
+    }
+
+    .marquee-dot {
+      opacity: 0.3;
+      font-size: 16px;
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translateX(0)
+      }
+
+      100% {
+        transform: translateX(-50%)
+      }
+    }
+
+    /* ── SHARED SECTION STYLES ── */
+    .section-eyebrow {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(0, 0, 0, 0.4);
+      margin-bottom: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .section-title {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: clamp(38px, 5vw, 66px);
+      font-weight: 700;
+      line-height: 1.04;
+      margin-bottom: 18px;
+      letter-spacing: -1.5px;
+    }
+
+    .section-desc {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: rgba(0, 0, 0, 0.5);
+      max-width: 540px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .65s, transform .65s
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none
+    }
+
+    /* ── PREMIUM STRIP ── */
+    #premium {
+      background: #000000;
+      padding: 100px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 48px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .pm-item {
+      text-align: center;
+      color: #FFFFFF;
+    }
+
+    /* Hide chapri emojis */
+    .pm-icon {
+      display: none;
+    }
+
+    .pm-item h3 {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+      color: #FFFFFF;
+    }
+
+    .pm-item p {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+    }
+
+    /* ── DELIVERY BANNER ── */
+    #delivery {
+      background: var(--black);
+      padding: 90px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .del-heading {
+      font-family: var(--display);
+      font-size: clamp(54px, 8vw, 100px);
+      color: var(--white);
+      line-height: .92;
+      margin-bottom: 20px
+    }
+
+    .del-heading span {
+      color: var(--gold)
+    }
+
+    .del-area {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .45);
+      font-style: italic
+    }
+
+    .del-area strong {
+      color: var(--gold-lt)
+    }
+
+    .del-times {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap
+    }
+
+    .time-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(201, 148, 42, .22);
+      border-radius: 6px;
+      padding: 26px 34px;
+      color: var(--white);
+      min-width: 170px
+    }
+
+    .time-card .t-label {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px
+    }
+
+    .time-card .t-val {
+      font-family: var(--display);
+      font-size: 30px
+    }
+
+    /* ── CARD IMAGE ── */
+    /*
+  ╔══════════════════════════════════════════════════════════╗
+  ║  IMAGE PLACEHOLDER STYLES                               ║
+  ║  .card-img-wrap = colored background div               ║
+  ║  To add your own image, place an <img> tag inside      ║
+  ║  .card-img-wrap (see comment below)                    ║
+  ╚══════════════════════════════════════════════════════════╝
+*/
+    .card-img-wrap {
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      /* fallback emoji size */
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thali-img-wrap {
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+    }
+
+    .thali-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .paratha-img-wrap {
+      width: 100%;
+      height: 190px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+    }
+
+    .paratha-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .combo-img-wrap {
+      width: 88px;
+      height: 88px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .combo-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    /* ── MENU SECTION ── */
+    #menu {
+      position: relative;
+      background: #FFFFFF;
+      padding: 140px 80px;
+      overflow: hidden;
+    }
+
+    #menu-vanta-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    #menu > *:not(#menu-vanta-bg) {
+      position: relative;
+      z-index: 2;
+    }
+
+    .menu-head {
+      text-align: center;
+      margin-bottom: 80px
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 30px
+    }
+
+    .pill {
+      background: rgba(0, 0, 0, 0.04);
+      border: none;
+      color: #000000;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .pill.active,
+    .pill:hover {
+      background: #000000;
+      color: #FFFFFF;
+    }
+
+    .menu-cat {
+      margin-bottom: 72px;
+    }
+
+    .cat-heading {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .cat-heading::after {
+      display: none;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 30px
+    }
+
+    .menu-card {
+      background: var(--white);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, .07);
+      transition: transform .3s, box-shadow .3s;
+      position: relative
+    }
+
+    .menu-card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, .14)
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 100px;
+      z-index: 2;
+      letter-spacing: .5px
+    }
+
+    .card-body {
+      padding: 24px 26px 28px
+    }
+
+    .card-body h3 {
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 700;
+      margin-bottom: 9px;
+      color: var(--text-dk)
+    }
+
+    .card-body p {
+      font-size: 13px;
+      color: var(--text-md);
+      line-height: 1.65;
+      margin-bottom: 20px
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .price {
+      font-family: var(--display);
+      font-size: 36px;
+      color: var(--green);
+      letter-spacing: 1px
+    }
+
+    .price sup {
+      font-size: 16px;
+      vertical-align: top;
+      margin-top: 7px;
+      display: inline-block
+    }
+
+    .veg-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--green-lt);
+      border: 1.5px solid var(--green);
+      display: inline-block;
+      margin-right: 7px;
+      vertical-align: middle
+    }
+
+    .order-btn {
+      background: var(--green);
+      color: var(--white);
+      border: none;
+      padding: 11px 22px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background .2s
+    }
+
+    .order-btn:hover {
+      background: var(--green-lt)
+    }
+
+    /* ── THALI SECTION ── */
+    #thali {
+      position: relative;
+      background: var(--black);
+      padding: 130px 80px;
+      overflow: hidden;
+    }
+
+    .thali-hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(201, 148, 42, 0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(42, 87, 50, 0.14) 0%, transparent 50%);
+    }
+
+    #thali > *:not(.spice-canvas):not(.thali-hero-bg) {
+      position: relative;
+      z-index: 2;
+    }
+
+    #thali .section-eyebrow { color: var(--gold); }
+    #thali .section-title { color: var(--white); }
+    #thali .section-desc { color: rgba(255,255,255,0.55); }
+
+    .thali-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 36px;
+      margin-top: 64px
+    }
+
+    .thali-card {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .08);
+      transition: transform .3s, box-shadow .3s;
+      position: relative
+    }
+
+    .thali-card:hover {
+      transform: translateY(-9px);
+      box-shadow: 0 22px 52px rgba(0, 0, 0, .15)
+    }
+
+    .thali-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--green);
+      color: var(--white);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .8px
+    }
+
+    .thali-body {
+      padding: 30px
+    }
+
+    .thali-body h3 {
+      font-family: var(--serif);
+      font-size: 26px;
+      margin-bottom: 10px
+    }
+
+    .thali-body p {
+      font-size: 14px;
+      color: var(--text-md);
+      line-height: 1.7;
+      margin-bottom: 22px
+    }
+
+    .thali-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .thali-price {
+      font-family: var(--display);
+      font-size: 42px;
+      color: var(--red)
+    }
+
+    /* ── PARATHA SECTION ── */
+    #paratha {
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+      padding: 130px 80px;
+    }
+
+    #paratha > *:not(.spice-canvas) {
+      position: relative;
+      z-index: 1;
+    }
+
+    #paratha .section-title {
+      color: var(--white)
+    }
+
+    .paratha-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 26px;
+      margin-top: 64px
+    }
+
+    .paratha-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(201, 148, 42, .2);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: background .3s, border-color .3s;
+      text-align: center;
+      padding-bottom: 32px
+    }
+
+    .paratha-card:hover {
+      background: rgba(201, 148, 42, .08);
+      border-color: var(--gold)
+    }
+
+    .paratha-card h3 {
+      font-family: var(--serif);
+      font-size: 22px;
+      color: var(--white);
+      margin: 18px 20px 10px;
+      line-height: 1.3
+    }
+
+    .paratha-card p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .55);
+      line-height: 1.6;
+      margin: 0 20px 20px
+    }
+
+    .paratha-price {
+      font-family: var(--display);
+      font-size: 44px;
+      color: var(--gold);
+      margin-bottom: 16px
+    }
+
+    /* ── SEASONAL + ADDONS SHARED WRAPPER ── */
+    #seasonal-addons-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #seasonal-addons-vanta-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    #seasonal-addons-wrap > *:not(#seasonal-addons-vanta-bg) {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── SEASONAL SECTION ── */
+    #seasonal {
+      background: transparent;
+      padding: 130px 80px 80px;
+    }
+
+    /* ── ADD-ONS ── */
+    #addons {
+      background: transparent;
+      padding: 72px 80px;
+    }
+
+    .addons-inner {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .addons-title {
+      font-family: var(--display);
+      font-size: 72px;
+      line-height: 1;
+      color: var(--black);
+    }
+
+    .addons-chips {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .addon-chip {
+      background: var(--black);
+      color: var(--white);
+      padding: 14px 28px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .addon-chip b {
+      color: var(--gold-lt);
+      font-family: var(--display);
+      font-size: 22px;
+      margin-left: 8px;
+    }
+
+    /* ── COMBOS ── */
+    #combos {
+      background: var(--cream2);
+      padding: 100px 80px
+    }
+
+    .combos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 60px;
+      max-width: 900px
+    }
+
+    .combo-card {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 38px;
+      display: flex;
+      align-items: flex-start;
+      gap: 26px;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, .05);
+      transition: transform .3s
+    }
+
+    .combo-card:hover {
+      transform: translateY(-5px)
+    }
+
+    .combo-text h3 {
+      font-family: var(--serif);
+      font-size: 22px;
+      margin-bottom: 8px
+    }
+
+    .combo-text p {
+      font-size: 13px;
+      color: var(--text-md);
+      line-height: 1.6;
+      margin-bottom: 14px
+    }
+
+    .combo-price {
+      font-family: var(--display);
+      font-size: 40px;
+      color: var(--red)
+    }
+
+
+
+    /* ── WEEKLY ── */
+    #weekly {
+      background: #000000;
+      padding: 130px 80px
+    }
+
+    #weekly .section-title {
+      color: var(--white)
+    }
+
+    .week-scroll {
+      overflow-x: auto;
+      margin-top: 60px
+    }
+
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border: 1px solid rgba(201, 148, 42, .2);
+      border-radius: 10px;
+      overflow: hidden;
+      min-width: 860px
+    }
+
+    .day-col {
+      border-right: 1px solid rgba(201, 148, 42, .12)
+    }
+
+    .day-col:last-child {
+      border-right: none
+    }
+
+    .day-header {
+      background: var(--gold);
+      color: var(--black);
+      text-align: center;
+      padding: 16px 8px;
+      font-family: var(--display);
+      font-size: 20px;
+      letter-spacing: 2px
+    }
+
+    .day-meal {
+      padding: 18px 14px;
+      border-top: 1px solid rgba(201, 148, 42, .1)
+    }
+
+    .meal-slot {
+      font-size: 9px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 7px
+    }
+
+    .meal-name {
+      font-size: 12px;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, .75)
+    }
+
+    /* ── MONTHLY ── */
+    #monthly {
+      background: #000000;
+      padding: 130px 80px
+    }
+
+    #monthly .section-eyebrow {
+      color: var(--gold-lt)
+    }
+
+    #monthly .section-title {
+      color: var(--white)
+    }
+
+    .monthly-wrap {
+      margin-top: 64px;
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 14px;
+      padding: 70px;
+      display: flex;
+      align-items: center;
+      gap: 90px;
+      flex-wrap: wrap
+    }
+
+    .monthly-price-block {
+      text-align: center;
+      flex-shrink: 0
+    }
+
+    .big-price {
+      font-family: var(--display);
+      font-size: 130px;
+      line-height: 1;
+      color: var(--gold);
+      text-shadow: 0 0 80px rgba(201, 148, 42, .35)
+    }
+
+    .big-price-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 8px
+    }
+
+    .monthly-features {
+      flex: 1;
+      min-width: 280px
+    }
+
+    .monthly-features h3 {
+      font-family: var(--serif);
+      font-size: 34px;
+      color: var(--white);
+      margin-bottom: 26px
+    }
+
+    .feat-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .feat-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 15px;
+      color: rgba(255, 255, 255, .78);
+      line-height: 1.55
+    }
+
+    .feat-list li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 4px
+    }
+
+    .monthly-cta {
+      margin-top: 38px;
+      background: var(--gold);
+      color: var(--black);
+      padding: 18px 50px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background .2s, transform .2s
+    }
+
+    .monthly-cta:hover {
+      background: var(--gold-lt);
+      transform: translateY(-2px)
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--black);
+      padding: 130px 80px;
+      text-align: center
+    }
+
+    #contact .section-title {
+      color: var(--white)
+    }
+
+    .contact-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 58px
+    }
+
+    .contact-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(201, 148, 42, .2);
+      border-radius: 10px;
+      padding: 38px 46px;
+      min-width: 220px;
+      transition: border-color .3s
+    }
+
+    .contact-card:hover {
+      border-color: var(--gold)
+    }
+
+    .contact-card .c-icon {
+      font-size: 34px;
+      margin-bottom: 14px
+    }
+
+    .contact-card h4 {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px
+    }
+
+    .contact-card a,
+    .contact-card p {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+      line-height: 1.6
+    }
+
+    .contact-card a:hover {
+      color: var(--gold)
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      padding: 40px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px
+    }
+
+    .footer-logo {
+      font-family: var(--display);
+      font-size: 26px;
+      color: var(--gold)
+    }
+
+    footer p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .3)
+    }
+
+    @media(max-width:900px) {
+      nav {
+        padding: 14px 20px
+      }
+
+      .nav-links {
+        display: none
+      }
+
+      #hero {
+        padding: 100px 24px 60px
+      }
+
+      #premium {
+        padding: 60px 24px
+      }
+
+      #delivery {
+        padding: 60px 24px
+      }
+
+      #addons {
+        padding: 50px 24px
+      }
+
+      #menu,
+      #thali,
+      #paratha,
+      #seasonal,
+      #weekly,
+      #monthly,
+      #contact {
+        padding: 80px 24px
+      }
+
+      .monthly-wrap {
+        padding: 36px 24px;
+        gap: 40px
+      }
+
+      .big-price {
+        font-size: 80px
+      }
+
+      .combos-grid {
+        grid-template-columns: 1fr
+      }
+
+      footer {
+        padding: 30px 24px;
+        flex-direction: column;
+        text-align: center
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+
+    /* ══════════════════════════════════════════════════
+   DASHBOARD MODAL
+══════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .82);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(6px)
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal-box {
+      background: #0F0E0C;
+      border: 1px solid rgba(201, 148, 42, .25);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 860px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      color: var(--white)
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      background: rgba(255, 255, 255, .08);
+      border: none;
+      color: var(--white);
+      font-size: 20px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s
+    }
+
+    .modal-close:hover {
+      background: rgba(201, 148, 42, .3)
+    }
+
+    .modal-header {
+      padding: 36px 40px 0;
+      border-bottom: 1px solid rgba(201, 148, 42, .12);
+      padding-bottom: 22px
+    }
+
+    .modal-header h2 {
+      font-family: var(--display);
+      font-size: 34px;
+      color: var(--gold);
+      letter-spacing: 2px;
+      margin-bottom: 4px
+    }
+
+    .modal-header p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .4)
+    }
+
+    .modal-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+      padding: 0 40px
+    }
+
+    .modal-tab {
+      padding: 14px 22px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .4);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none
+    }
+
+    .modal-tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold)
+    }
+
+    .modal-body {
+      padding: 30px 40px 40px
+    }
+
+    .tab-panel {
+      display: none
+    }
+
+    .tab-panel.active {
+      display: block
+    }
+
+    /* Dashboard Stats Row */
+    .dash-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px
+    }
+
+    .dash-stat {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(201, 148, 42, .15);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center
+    }
+
+    .dash-stat .ds-val {
+      font-family: var(--display);
+      font-size: 38px;
+      color: var(--gold);
+      line-height: 1
+    }
+
+    .dash-stat .ds-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .4);
+      margin-top: 6px
+    }
+
+    .dash-stat .ds-sub {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .3);
+      margin-top: 3px
+    }
+
+    /* Progress bars */
+    .macro-row {
+      margin-bottom: 16px
+    }
+
+    .macro-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 6px
+    }
+
+    .macro-label span:first-child {
+      color: rgba(255, 255, 255, .7)
+    }
+
+    .macro-label span:last-child {
+      color: var(--gold);
+      font-weight: 600
+    }
+
+    .macro-bar-bg {
+      background: rgba(255, 255, 255, .08);
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden
+    }
+
+    .macro-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width .6s ease
+    }
+
+    .bar-cal {
+      background: linear-gradient(90deg, #C9942A, #F0B84A)
+    }
+
+    .bar-prot {
+      background: linear-gradient(90deg, #2A5732, #4CAF50)
+    }
+
+    .bar-carb {
+      background: linear-gradient(90deg, #1565C0, #42A5F5)
+    }
+
+    .bar-fat {
+      background: linear-gradient(90deg, #B83030, #EF5350)
+    }
+
+    /* Meal Log */
+    .meal-log-form {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 10px;
+      padding: 22px;
+      margin-bottom: 24px
+    }
+
+    .meal-log-form h4 {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px
+    }
+
+    .form-row.three {
+      grid-template-columns: 1fr 1fr 1fr
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .form-group label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .4)
+    }
+
+    .form-group input,
+    .form-group select {
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--white);
+      font-size: 14px;
+      font-family: var(--sans);
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--gold)
+    }
+
+    .form-group select option {
+      background: #1a1814;
+      color: var(--white)
+    }
+
+    .btn-add-meal {
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      padding: 11px 28px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: background .2s
+    }
+
+    .btn-add-meal:hover {
+      background: var(--gold-lt)
+    }
+
+    /* Logged meals list */
+    .logged-meals {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .meal-entry {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 8px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px
+    }
+
+    .meal-entry .me-info {
+      flex: 1
+    }
+
+    .meal-entry .me-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white)
+    }
+
+    .meal-entry .me-time {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .35);
+      margin-top: 2px
+    }
+
+    .meal-entry .me-macros {
+      display: flex;
+      gap: 14px;
+      font-size: 12px
+    }
+
+    .meal-entry .me-macros span {
+      color: rgba(255, 255, 255, .5)
+    }
+
+    .meal-entry .me-macros b {
+      color: var(--gold)
+    }
+
+    .meal-entry .me-del {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, .25);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      transition: color .2s
+    }
+
+    .meal-entry .me-del:hover {
+      color: var(--red)
+    }
+
+    .empty-log {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255, 255, 255, .25);
+      font-size: 14px
+    }
+
+    /* Maintenance Calculator */
+    .calc-section {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(201, 148, 42, .15);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 20px
+    }
+
+    .calc-section h4 {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px
+    }
+
+    .calc-result-box {
+      background: rgba(201, 148, 42, .1);
+      border: 1px solid rgba(201, 148, 42, .3);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 20px
+    }
+
+    .calc-result-box .cr-main {
+      font-family: var(--display);
+      font-size: 54px;
+      color: var(--gold)
+    }
+
+    .calc-result-box .cr-label {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .5);
+      margin-bottom: 14px
+    }
+
+    .calc-goals {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px
+    }
+
+    .calc-goal {
+      background: rgba(255, 255, 255, .05);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center
+    }
+
+    .calc-goal .cg-val {
+      font-family: var(--display);
+      font-size: 26px;
+      color: var(--white)
+    }
+
+    .calc-goal .cg-name {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .4);
+      margin-top: 4px
+    }
+
+    .calc-goal.loss .cg-val {
+      color: #EF5350
+    }
+
+    .calc-goal.maintain .cg-val {
+      color: var(--gold)
+    }
+
+    .calc-goal.gain .cg-val {
+      color: #4CAF50
+    }
+
+    /* Date bar */
+    .date-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px
+    }
+
+    .date-bar h3 {
+      font-family: var(--serif);
+      font-size: 20px;
+      color: var(--white)
+    }
+
+    .date-bar .today-badge {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: rgba(201, 148, 42, .2);
+      color: var(--gold);
+      padding: 4px 12px;
+      border-radius: 100px
+    }
+
+    .reset-day {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, .12);
+      color: rgba(255, 255, 255, .4);
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .reset-day:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    /* ══════════════════════════════════════════════════
+   AI ASSISTANT (VOID)
+══════════════════════════════════════════════════ */
+    #ai-fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 8000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px
+    }
+
+    .ai-toggle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--black) 0%, #1a1206 100%);
+      border: 1.5px solid rgba(201, 148, 42, .5);
+      box-shadow: 0 4px 28px rgba(201, 148, 42, .25);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      transition: transform .25s, box-shadow .25s;
+      position: relative
+    }
+
+    .ai-toggle:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 36px rgba(201, 148, 42, .45)
+    }
+
+    .ai-toggle .ai-pulse {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 148, 42, .15), transparent 70%);
+      animation: pulse 2.4s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: .5;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.06)
+      }
+    }
+
+    .ai-badge-dot {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--green-lt);
+      border: 2px solid var(--black)
+    }
+
+    #ai-window {
+      width: 380px;
+      background: #0D0C0A;
+      border: 1px solid rgba(201, 148, 42, .28);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .7);
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      max-height: 580px;
+      animation: slideUp .25s ease
+    }
+
+    #ai-window.open {
+      display: flex
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .ai-header {
+      background: linear-gradient(135deg, #1a1206, #0D0C0A);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(201, 148, 42, .12)
+    }
+
+    .ai-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0
+    }
+
+    .ai-header-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white)
+    }
+
+    .ai-header-info p {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .35)
+    }
+
+    .ai-header-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, .3);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      transition: color .2s
+    }
+
+    .ai-header-close:hover {
+      color: var(--white)
+    }
+
+    .ai-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 200px;
+      max-height: 380px
+    }
+
+    .ai-messages::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .ai-messages::-webkit-scrollbar-thumb {
+      background: rgba(201, 148, 42, .3);
+      border-radius: 2px
+    }
+
+    .msg {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      animation: msgIn .2s ease
+    }
+
+    @keyframes msgIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .msg.user {
+      flex-direction: row-reverse
+    }
+
+    .msg-bubble {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.6
+    }
+
+    .msg.ai .msg-bubble {
+      background: rgba(255, 255, 255, .07);
+      color: rgba(255, 255, 255, .85);
+      border-bottom-left-radius: 4px
+    }
+
+    .msg.user .msg-bubble {
+      background: var(--gold);
+      color: var(--black);
+      font-weight: 500;
+      border-bottom-right-radius: 4px
+    }
+
+    .msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0
+    }
+
+    .msg.user .msg-avatar {
+      background: rgba(255, 255, 255, .1)
+    }
+
+    .ai-quick-chips {
+      padding: 8px 16px 0;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .q-chip {
+      background: rgba(201, 148, 42, .12);
+      border: 1px solid rgba(201, 148, 42, .25);
+      color: var(--gold);
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: background .2s;
+      white-space: nowrap
+    }
+
+    .q-chip:hover {
+      background: rgba(201, 148, 42, .25)
+    }
+
+    .ai-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 14px 16px;
+      border-top: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .ai-input {
+      flex: 1;
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--white);
+      font-size: 13px;
+      font-family: var(--sans);
+      outline: none;
+      transition: border-color .2s;
+      resize: none
+    }
+
+    .ai-input:focus {
+      border-color: rgba(201, 148, 42, .5)
+    }
+
+    .ai-send {
+      background: var(--gold);
+      border: none;
+      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s;
+      flex-shrink: 0
+    }
+
+    .ai-send:hover {
+      background: var(--gold-lt)
+    }
+
+    .ai-send svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--black)
+    }
+
+    .ai-typing {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      padding: 4px 2px
+    }
+
+    .ai-typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(201, 148, 42, .6);
+      animation: typing 1.2s infinite
+    }
+
+    .ai-typing span:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .ai-typing span:nth-child(3) {
+      animation-delay: .4s
+    }
+
+    @keyframes typing {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0)
+      }
+
+      30% {
+        transform: translateY(-6px)
+      }
+    }
+
+    /* Dash trigger button in nav */
+    .nav-dash-btn {
+      background: rgba(201, 148, 42, .15) !important;
+      color: var(--gold) !important;
+      border: 1px solid rgba(201, 148, 42, .3) !important;
+      padding: 9px 16px !important;
+      border-radius: 3px;
+      font-weight: 700 !important
+    }
+
+    .nav-dash-btn::after {
+      display: none !important
+    }
+
+    .nav-dash-btn:hover {
+      background: rgba(201, 148, 42, .28) !important
+    }
+
+    @media(max-width:900px) {
+      #ai-window {
+        width: calc(100vw - 32px);
+        right: 0
+      }
+
+      #ai-fab {
+        right: 16px;
+        bottom: 20px
+      }
+
+      .modal-body {
+        padding: 20px 20px 30px
+      }
+
+      .modal-header {
+        padding: 24px 20px 16px
+      }
+
+      .modal-tabs {
+        padding: 0 20px
+      }
+
+      .form-row {
+        grid-template-columns: 1fr
+      }
+
+      .form-row.three {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .calc-goals {
+        grid-template-columns: 1fr 1fr 1fr
+      }
+
+      .dash-stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   SPECIAL ANIMATIONS
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── 1. LIQUID CURSOR BLOB ── */
+    #cursor-blob {
+      position: fixed;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center,
+          rgba(255, 167, 195, 0.13) 0%,
+          rgba(187, 147, 199, 0.07) 40%,
+          transparent 70%);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s cubic-bezier(0.23, 1, 0.32, 1);
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+
+    #cursor-blob.hovering {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle at center,
+          rgba(255, 167, 195, 0.22) 0%,
+          rgba(201, 148, 42, 0.1) 40%,
+          transparent 65%);
+      transition: width 0.4s ease, height 0.4s ease, background 0.4s ease,
+        transform 0.08s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ── 2. STEAM EFFECT on card hover ── */
+    .steam-wrap {
+      position: relative;
+      overflow: visible !important;
+    }
+
+    .steam-wrap::before,
+    .steam-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: calc(100% - 2px);
+      width: 8px;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.55);
+      filter: blur(5px);
+      pointer-events: none;
+      opacity: 0;
+      transition: none;
+    }
+
+    .steam-wrap::before {
+      left: 35%;
+      animation: none;
+    }
+
+    .steam-wrap::after {
+      left: 60%;
+      animation: none;
+    }
+
+    .menu-card:hover .steam-wrap::before {
+      animation: steam1 1.4s ease-out infinite;
+    }
+
+    .menu-card:hover .steam-wrap::after {
+      animation: steam2 1.6s ease-out .3s infinite;
+    }
+
+    .thali-card:hover .steam-wrap::before {
+      animation: steam1 1.4s ease-out infinite;
+    }
+
+    .thali-card:hover .steam-wrap::after {
+      animation: steam2 1.6s ease-out .3s infinite;
+    }
+
+    .paratha-card:hover .steam-wrap::before {
+      animation: steam1 1.4s ease-out infinite;
+    }
+
+    .paratha-card:hover .steam-wrap::after {
+      animation: steam2 1.6s ease-out .3s infinite;
+    }
+
+    @keyframes steam1 {
+      0% {
+        height: 0;
+        opacity: 0;
+        transform: translateX(0) translateY(0) scaleX(1);
+      }
+
+      15% {
+        opacity: 0.7;
+      }
+
+      80% {
+        opacity: 0.15;
+        transform: translateX(-14px) translateY(-60px) scaleX(2.5);
+      }
+
+      100% {
+        height: 70px;
+        opacity: 0;
+        transform: translateX(-18px) translateY(-80px) scaleX(3);
+      }
+    }
+
+    @keyframes steam2 {
+      0% {
+        height: 0;
+        opacity: 0;
+        transform: translateX(0) translateY(0) scaleX(1);
+      }
+
+      15% {
+        opacity: 0.6;
+      }
+
+      80% {
+        opacity: 0.12;
+        transform: translateX(14px) translateY(-55px) scaleX(2.2);
+      }
+
+      100% {
+        height: 65px;
+        opacity: 0;
+        transform: translateX(20px) translateY(-75px) scaleX(2.8);
+      }
+    }
+
+    /* ── 3. MAGNETIC BUTTON glow ring ── */
+    .btn-gold,
+    .btn-ghost,
+    .order-btn,
+    .monthly-cta {
+      position: relative;
+      overflow: visible;
+    }
+
+    .btn-gold::before,
+    .btn-ghost::before,
+    .order-btn::before,
+    .monthly-cta::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: inherit;
+      background: conic-gradient(from var(--angle, 0deg),
+          transparent 40%,
+          rgba(255, 167, 195, 0.8) 50%,
+          rgba(201, 148, 42, 0.8) 55%,
+          transparent 65%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+      animation: spin-conic 2.5s linear infinite paused;
+    }
+
+    .btn-gold:hover::before,
+    .btn-ghost:hover::before,
+    .order-btn:hover::before,
+    .monthly-cta:hover::before {
+      opacity: 1;
+      animation-play-state: running;
+    }
+
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes spin-conic {
+      to {
+        --angle: 360deg;
+      }
+    }
+
+    /* ── 4. MAGNETIC BUTTON glow ring ── */
+    .spice-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.7;
+    }
+
+    /* ── 6. SECTION TITLE ink-reveal underline ── */
+    .section-title {
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt), transparent);
+      transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+      border-radius: 2px;
+    }
+
+    .section-title.underlined::after {
+      width: 60%;
+    }
+
+    /* ── 7. CARD number-counter pop on reveal ── */
+    .price,
+    .big-price,
+    .paratha-price,
+    .thali-price,
+    .combo-price {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .price:hover,
+    .big-price:hover,
+    .paratha-price:hover,
+    .thali-price:hover,
+    .combo-price:hover {
+      transform: scale(1.08);
+    }
+
+    /* ── 8. NAV logo ─ minimal ── */
+
+    /* ── 9. TIME CARDS flip-in ── */
+    .time-card {
+      transform-style: preserve-3d;
+      animation: none;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s;
+    }
+
+    .time-card:hover {
+      transform: translateY(-8px) rotateX(6deg);
+      box-shadow: 0 16px 40px rgba(201, 148, 42, 0.25);
+    }
+
+    /* ── 10. MARQUEE pause on hover ── */
+    .marquee-strip:hover .marquee-inner {
+      animation-play-state: paused;
+      cursor: default;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+  NAVIGATION
+  CHANGE: Update the WhatsApp link below
+============================================================ -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">Fresh Plate <span>·</span> Co</a>
+    <ul class="nav-links">
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#thali">Thalis</a></li>
+      <li><a href="#paratha">Parathas</a></li>
+      <li><a href="#weekly">Weekly Plan</a></li>
+      <li><a href="#monthly">Monthly ₹4000</a></li>
+      <li><a href="#contact">Order Now</a></li>
+      <!-- 3-dots dropdown for right-side actions -->
+      <li class="nav-dots-wrap" id="nav-dots-wrap">
+        <button class="nav-dots-btn" id="nav-dots-btn" onclick="toggleNavDropdown()" aria-label="More options">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </button>
+        <div class="nav-dropdown" id="nav-dropdown">
+          <!-- Dashboard -->
+          <a href="#" onclick="openDash();closeNavDropdown();return false;">Dashboard</a>
+          <div class="dd-divider"></div>
+          <!-- Auth: logged out -->
+          <div id="dd-auth-btns">
+            <a href="#" onclick="openUserLogin();closeNavDropdown();return false;">Login</a>
+            <a href="#" onclick="openUserRegister();closeNavDropdown();return false;">Register</a>
+          </div>
+          <!-- Auth: logged in -->
+          <div id="dd-user-info" style="display:none">
+            <div class="dd-username-row" id="dd-username"></div>
+            <button class="dd-btn" onclick="logoutUser();closeNavDropdown();">Sign Out</button>
+          </div>
+          <div class="dd-divider"></div>
+          <!-- WhatsApp -->
+          <a href="https://wa.me/918376044136" target="_blank" onclick="closeNavDropdown()">WhatsApp Us</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ============================================================
+  HERO SECTION
+============================================================ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+    <canvas class="spice-canvas"></canvas>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">✦ Premium Home-Style Meals — Delivered Daily ✦</div>
+      <h1 class="hero-title">Fresh<br><span>Plate</span><br>&amp; Co</h1>
+      <p class="hero-subtitle">Restaurant quality. Home comfort. Delivered to your door.</p>
+      <div class="hero-btns">
+        <!-- CHANGE LINK: WhatsApp order link -->
+        <a href="https://wa.me/918376044136?text=Hi!+I'd+like+to+order" target="_blank" class="btn-gold">Order on
+          WhatsApp</a>
+        <a href="#menu" class="btn-ghost">Explore the Full Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE STRIP -->
+  <div class="marquee-strip">
+    <div class="marquee-inner">
+      <span>Rajma Rice</span><span class="marquee-dot">·</span><span>Paneer Thali</span><span
+        class="marquee-dot">·</span><span>Kadhi Rice</span><span class="marquee-dot">·</span><span>Chole
+        Bowl</span><span class="marquee-dot">·</span><span>Palak Paneer</span><span
+        class="marquee-dot">·</span><span>Poori Aloo</span><span class="marquee-dot">·</span><span>Gobhi
+        Paratha</span><span class="marquee-dot">·</span><span>Monthly ₹4000</span><span
+        class="marquee-dot">·</span><span>Special Thali ₹210</span><span class="marquee-dot">·</span><span>Rajma
+        Rice</span><span class="marquee-dot">·</span><span>Paneer Thali</span><span
+        class="marquee-dot">·</span><span>Kadhi Rice</span><span class="marquee-dot">·</span><span>Chole
+        Bowl</span><span class="marquee-dot">·</span><span>Palak Paneer</span><span
+        class="marquee-dot">·</span><span>Poori Aloo</span><span class="marquee-dot">·</span><span>Gobhi
+        Paratha</span><span class="marquee-dot">·</span><span>Monthly ₹4000</span><span
+        class="marquee-dot">·</span><span>Special Thali ₹210</span><span class="marquee-dot">·</span>
+    </div>
+  </div>
+
+  <!-- PREMIUM STRIP -->
+  <div id="premium">
+    <div class="pm-item reveal">
+      <div class="pm-icon">👨‍🍳</div>
+      <h3>Chef-Quality</h3>
+      <p>Every dish crafted fresh, daily. No frozen shortcuts, ever.</p>
+    </div>
+    <div class="pm-item reveal">
+      <div class="pm-icon">🌿</div>
+      <h3>Pure Vegetarian</h3>
+      <p>100% veg kitchen. Wholesome, nourishing, clean.</p>
+    </div>
+    <div class="pm-item reveal">
+      <div class="pm-icon">⚡</div>
+      <h3>Same-Day Delivery</h3>
+      <p>Lunch 2–5 PM · Dinner 7–11 PM · Mon–Sun</p>
+    </div>
+    <div class="pm-item reveal">
+      <div class="pm-icon">📐</div>
+      <h3>Fully Customisable</h3>
+      <p>Personalise your monthly plan. Your taste, your schedule.</p>
+    </div>
+    <div class="pm-item reveal">
+      <div class="pm-icon">💬</div>
+      <h3>WhatsApp Ordering</h3>
+      <p>Order in seconds. Track your meal. Talk to a real person.</p>
+    </div>
+  </div>
+
+  <!-- DELIVERY BANNER -->
+  <div id="delivery">
+    <canvas class="spice-canvas"></canvas>
+    <div class="reveal">
+      <div class="del-heading">Delivered<br><span>Hot &amp; Fresh.</span><br>Every Day.</div>
+      <p class="del-area">Serving <strong>Supertech Czar Suites, Bennett University</strong> &amp; nearby areas</p>
+    </div>
+    <div class="del-times reveal">
+      <div class="time-card">
+        <div class="t-label">🌞 Lunch</div>
+        <div class="t-val">2 PM – 5 PM</div>
+      </div>
+      <div class="time-card">
+        <div class="t-label">🌙 Dinner</div>
+        <div class="t-val">7 PM – 11 PM</div>
+      </div>
+      <div class="time-card">
+        <div class="t-label">📅 Open</div>
+        <div class="t-val">Mon – Sun</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+  FULL MENU SECTION
+  ══════════════════════════════════════════════════════════════
+  HOW TO CHANGE IMAGES:
+  Each card has a .card-img-wrap div which currently shows an emoji.
+  To add your own image:
+    1. Remove the emoji line
+    2. Add: <img src="YOUR_IMAGE_URL" alt="Item Name">
+  ══════════════════════════════════════════════════════════════
+============================================================ -->
+  <section id="menu">
+    <div id="menu-vanta-bg"></div>
+    <div class="menu-head reveal">
+      <div class="section-eyebrow">— The Full Menu —</div>
+      <h2 class="section-title">Every Meal.<br>Every Craving.</h2>
+      <p class="section-desc" style="margin:0 auto;">Hand-crafted daily.
+        Served fresh for 1 person, on availability.</p>
+      <div class="filter-pills">
+        <button class="pill active" onclick="filterCat('all',this)">All Items</button>
+        <button class="pill" onclick="filterCat('meals',this)">Signature Meals</button>
+        <button class="pill" onclick="filterCat('rice',this)">Rice Bowls</button>
+        <button class="pill" onclick="filterCat('combo',this)">Combos</button>
+        <button class="pill" onclick="filterCat('thali',this)">Grand Thali</button>
+        <button class="pill" onclick="filterCat('paratha',this)">Stuffed Paratha</button>
+        <button class="pill" onclick="filterCat('seasonal',this)">Seasonal & Special</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+       SIGNATURE MEALS
+  ════════════════════════════════════ -->
+    <div class="menu-cat reveal" data-cat="meals">
+      <div class="cat-heading">Signature Meals</div>
+      <div class="menu-grid">
+
+        <!-- ────── Dal + Aloo Sabzi Meal ────── -->
+        <div class="menu-card reveal">
+
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#4a7c3a,#c8b560)">
+            <img src="dalaloosabzimeal.png" alt="Dal Aloo Sabzi Meal">
+          </div>
+
+          <div class="card-badge">Best Seller</div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Dal + Aloo Sabzi Meal</h3>
+            <p>Dal, aloo sabzi, 4 roti or rice, fresh salad, pickle. The comfort classic done right.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>150</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Dal+%2B+Aloo+Sabzi+Meal" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── Paneer Meal ────── -->
+        <div class="menu-card reveal">
+
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#3a6642,#a8c870)">
+            <img src="matarpaneerkadhai.png" alt="Paneer Meal">
+          </div>
+
+          <div class="card-badge">Premium</div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Paneer Meal (Matar/Kadhai)</h3>
+            <p>Rich paneer sabzi, 4 freshly made roti, salad, and pickle. Two preparation styles.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>160</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Paneer+Meal" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── Kadhi Rice Meal ────── -->
+        <div class="menu-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Kadhi Rice Meal                             │
+          │  <img src="YOUR_KADHI_RICE_IMAGE_URL"               │
+          │       alt="Kadhi Rice Meal">                        │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#a07820,#f0d060)">
+            🍲
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_KADHI_RICE_IMAGE_URL" alt="Kadhi Rice Meal"> -->
+          </div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Kadhi Rice Meal</h3>
+            <p>Creamy kadhi pakora over steamed rice, served with fresh salad and tangy pickle.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>150</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Kadhi+Rice+Meal" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── Mix Veg + Dal ────── -->
+        <div class="menu-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Mix Veg + Dal Meal                          │
+          │  <img src="YOUR_MIXVEG_DAL_IMAGE_URL"               │
+          │       alt="Mix Veg Dal Meal">                       │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#2a6030,#80c050)">
+            🥘
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_MIXVEG_DAL_IMAGE_URL" alt="Mix Veg Dal Meal"> -->
+          </div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Mix Veg + Dal Meal</h3>
+            <p>Seasonal mix veg sabzi, dal, 4 roti or rice, salad. Nutritious and wholesome.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>160</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Mix+Veg+Dal+Meal" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── Poori Aloo Special ────── -->
+        <div class="menu-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Poori Aloo Special                          │
+          │  <img src="YOUR_POORI_ALOO_IMAGE_URL"               │
+          │       alt="Poori Aloo Special">                     │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#8B5A2B,#D4A050)">
+            🫓
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_POORI_ALOO_IMAGE_URL" alt="Poori Aloo Special"> -->
+          </div>
+          <div class="card-badge">Weekend Fav</div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Poori Aloo Special</h3>
+            <p>5 golden pooris with spiced aloo sabzi, pickle, green chutney, and fresh curd.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>170</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Poori+Aloo+Special" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+       RICE BOWLS
+  ════════════════════════════════════ -->
+    <div class="menu-cat reveal" data-cat="rice">
+      <div class="cat-heading">Rice Bowl Meals</div>
+      <div class="menu-grid">
+
+        <!-- ────── Rajma Rice Bowl ────── -->
+        <div class="menu-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Rajma Rice Bowl                             │
+          │  <img src="YOUR_RAJMA_RICE_IMAGE_URL"               │
+          │       alt="Rajma Rice Bowl">                        │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#7B1A1A,#C84020)">
+            🫘
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_RAJMA_RICE_IMAGE_URL" alt="Rajma Rice Bowl"> -->
+          </div>
+          <div class="card-badge">Fan Favourite</div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Rajma Rice Bowl</h3>
+            <p>Slow-simmered rajma gravy over steamed rice with fresh salad. Pure soul food.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>160</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Rajma+Rice+Bowl" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── Protein Rajma Bowl ────── -->
+        <div class="menu-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Protein Rajma Bowl (Paneer Loaded)          │
+          │  <img src="YOUR_PROTEIN_RAJMA_IMAGE_URL"            │
+          │       alt="Protein Rajma Bowl">                     │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#6A1010,#B83020)">
+            💪
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_PROTEIN_RAJMA_IMAGE_URL" alt="Protein Rajma Bowl"> -->
+          </div>
+          <div class="card-badge">High Protein</div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Protein Rajma Bowl (Paneer Loaded)</h3>
+            <p>Slow-cooked rajma with generous paneer, steamed rice, and fresh salad.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>180</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Protein+Rajma+Bowl" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── Chole Rice Bowl ────── -->
+        <div class="menu-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Chole Rice Bowl                             │
+          │  <img src="YOUR_CHOLE_RICE_IMAGE_URL"               │
+          │       alt="Chole Rice Bowl">                        │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#5C3A1A,#A07030)">
+            🍛
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_CHOLE_RICE_IMAGE_URL" alt="Chole Rice Bowl"> -->
+          </div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Chole Rice Bowl</h3>
+            <p>Spiced chole masala paired with steamed rice and a crisp fresh salad.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>160</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Chole+Rice+Bowl" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── Yellow Dal Rice Bowl ────── -->
+        <div class="menu-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Yellow Dal Rice Bowl                        │
+          │  <img src="YOUR_YELLOW_DAL_IMAGE_URL"               │
+          │       alt="Yellow Dal Rice Bowl">                   │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#A08020,#E8C840)">
+            🌕
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_YELLOW_DAL_IMAGE_URL" alt="Yellow Dal Rice Bowl"> -->
+          </div>
+          <div class="card-badge">Budget Pick</div>
+          <div class="card-body">
+            <h3><span class="veg-dot"></span>Yellow Dal Rice Bowl</h3>
+            <p>Simple, healing yellow dal with steamed rice and salad. Light and satisfying.</p>
+            <div class="card-footer">
+              <div class="price"><sup>₹</sup>110</div>
+              <!-- CHANGE LINK -->
+              <a href="https://wa.me/918376044136?text=I+want+to+order+Yellow+Dal+Rice+Bowl" target="_blank"
+                class="order-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+       COMFORT COMBOS
+  ════════════════════════════════════ -->
+    <div class="menu-cat reveal" data-cat="combo">
+      <div class="cat-heading">Comfort Combos</div>
+      <div class="combos-grid">
+
+        <!-- ────── Dal + Rice Combo ────── -->
+        <div class="combo-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Dal + Rice Combo                            │
+          │  <img src="YOUR_DAL_RICE_COMBO_IMAGE_URL"           │
+          │       alt="Dal Rice Combo">                         │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="combo-img-wrap" style="background:linear-gradient(135deg,#4a7030,#a0d060)">
+            🍛
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_DAL_RICE_COMBO_IMAGE_URL" alt="Dal Rice Combo"> -->
+          </div>
+          <div class="combo-text">
+            <h3>Dal + Rice Combo</h3>
+            <p>Steamed rice with warm dal and a fresh salad. Simple. Satisfying. Perfect.</p>
+            <div class="combo-price">₹110</div><br>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Dal+Rice+Combo" target="_blank"
+              class="order-btn">Order</a>
+          </div>
+        </div>
+
+        <!-- ────── Aloo Sabzi + 4 Roti Combo ────── -->
+        <div class="combo-card reveal">
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  IMAGE: Aloo Sabzi + 4 Roti Combo                   │
+          │  <img src="YOUR_ALOO_ROTI_COMBO_IMAGE_URL"          │
+          │       alt="Aloo Sabzi Roti Combo">                  │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div class="combo-img-wrap" style="background:linear-gradient(135deg,#8B5A2B,#D4A050)">
+            🫓
+            <!-- APNI IMAGE YAHAN DAALEN:
+          <img src="YOUR_ALOO_ROTI_COMBO_IMAGE_URL" alt="Aloo Sabzi Roti Combo"> -->
+          </div>
+          <div class="combo-text">
+            <h3>Aloo Sabzi + 4 Roti Combo</h3>
+            <p>Spiced aloo sabzi with 4 fresh roti, salad, and pickle. Classic and unbeatable.</p>
+            <div class="combo-price">₹130</div><br>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Aloo+Sabzi+Roti+Combo" target="_blank"
+              class="order-btn">Order</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+  THALI SECTION
+  HOW TO CHANGE IMAGES: Each thali card has a .thali-img-wrap div.
+  Remove the emoji and add your own <img> tag.
+============================================================ -->
+  <section id="thali">
+    <div class="thali-hero-bg"></div>
+    <canvas class="spice-canvas"></canvas>
+    <div class="section-eyebrow reveal">— Thali Section —</div>
+    <h2 class="section-title reveal">The Grand<br>Thali Experience</h2>
+    <p class="section-desc reveal">A complete feast on one plate. Three tiers of abundance — pick yours.</p>
+    <div class="thali-grid">
+
+      <!-- ────── Regular Veg Thali ────── -->
+      <div class="thali-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Regular Veg Thali                             │
+        │  <img src="YOUR_VEG_THALI_IMAGE_URL"                  │
+        │       alt="Regular Veg Thali">                        │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="thali-img-wrap steam-wrap" style="background:linear-gradient(135deg,#2a5732,#50a060)">
+          🍽️
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_VEG_THALI_IMAGE_URL" alt="Regular Veg Thali"> -->
+        </div>
+        <div class="thali-badge">Most Popular</div>
+        <div class="thali-body">
+          <h3>Regular Veg Thali</h3>
+          <p>Dal, one sabzi, 4 roti + rice, fresh salad, and pickle. The complete everyday feast.</p>
+          <div class="thali-footer">
+            <div class="thali-price">₹150</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Regular+Veg+Thali" target="_blank"
+              class="order-btn">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Paneer Thali ────── -->
+      <div class="thali-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Paneer Thali                                  │
+        │  <img src="YOUR_PANEER_THALI_IMAGE_URL"               │
+        │       alt="Paneer Thali">                             │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="thali-img-wrap steam-wrap" style="background:linear-gradient(135deg,#3a6048,#70c080)">
+          🧀
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_PANEER_THALI_IMAGE_URL" alt="Paneer Thali"> -->
+        </div>
+        <div class="thali-badge">Premium</div>
+        <div class="thali-body">
+          <h3>Paneer Thali</h3>
+          <p>Paneer sabzi, dal, 4 roti + rice, salad, pickle. Indulgence at an honest price.</p>
+          <div class="thali-footer">
+            <div class="thali-price">₹170</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Paneer+Thali" target="_blank"
+              class="order-btn">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Special Thali ────── -->
+      <div class="thali-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Special Thali                                 │
+        │  <img src="YOUR_SPECIAL_THALI_IMAGE_URL"              │
+        │       alt="Special Thali">                            │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="thali-img-wrap steam-wrap" style="background:linear-gradient(135deg,#5C3010,#C87020)">
+          👑
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_SPECIAL_THALI_IMAGE_URL" alt="Special Thali"> -->
+        </div>
+        <div class="thali-badge" style="background:var(--gold);color:var(--black)">Premium Plus</div>
+        <div class="thali-body">
+          <h3>Special Thali</h3>
+          <p>Paneer plus one extra sabzi, dal, 4 roti + rice, salad, pickle. The full royal spread.</p>
+          <div class="thali-footer">
+            <div class="thali-price">₹210</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Special+Thali" target="_blank"
+              class="order-btn">Order</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+  PARATHA SECTION
+  HOW TO CHANGE IMAGES: Inside .paratha-img-wrap, remove the emoji
+  and add your own <img> tag.
+============================================================ -->
+  <section id="paratha">
+    <canvas class="spice-canvas"></canvas>
+    <div class="section-eyebrow reveal" style="color:var(--gold)">— Morning &amp; Anytime —</div>
+    <h2 class="section-title reveal" style="color:var(--white)">Stuffed Paratha<br>Meals</h2>
+    <p class="section-desc reveal" style="color:rgba(255,255,255,0.55)">Served for 1 person. Every meal includes butter,
+      curd, chutney &amp; pickle.</p>
+    <div class="paratha-grid">
+
+      <!-- ────── Aloo Paratha ────── -->
+      <div class="paratha-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Aloo Paratha Meal                             │
+        │  <img src="YOUR_ALOO_PARATHA_IMAGE_URL"               │
+        │       alt="Aloo Paratha Meal">                        │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="paratha-img-wrap steam-wrap" style="background:linear-gradient(135deg,#6A4820,#C8A050)">
+          🫓
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_ALOO_PARATHA_IMAGE_URL" alt="Aloo Paratha Meal"> -->
+        </div>
+        <h3>Aloo Paratha Meal</h3>
+        <p>2 parathas stuffed with spiced potato, with butter, curd, chutney &amp; pickle.</p>
+        <div class="paratha-price">₹130</div>
+        <!-- CHANGE LINK -->
+        <a href="https://wa.me/918376044136?text=I+want+to+order+Aloo+Paratha+Meal" target="_blank"
+          class="order-btn">Order</a>
+      </div>
+
+      <!-- ────── Aloo-Pyaaz Paratha ────── -->
+      <div class="paratha-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Aloo-Pyaaz Paratha Meal                       │
+        │  <img src="YOUR_ALOO_PYAAZ_PARATHA_IMAGE_URL"         │
+        │       alt="Aloo Pyaaz Paratha Meal">                  │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="paratha-img-wrap steam-wrap" style="background:linear-gradient(135deg,#7A5020,#D4A848)">
+          🧅
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_ALOO_PYAAZ_PARATHA_IMAGE_URL" alt="Aloo Pyaaz Paratha Meal"> -->
+        </div>
+        <h3>Aloo-Pyaaz Paratha Meal</h3>
+        <p>Crispy aloo-pyaaz stuffed parathas with butter, curd, chutney &amp; pickle.</p>
+        <div class="paratha-price">₹135</div>
+        <!-- CHANGE LINK -->
+        <a href="https://wa.me/918376044136?text=I+want+to+order+Aloo+Pyaaz+Paratha+Meal" target="_blank"
+          class="order-btn">Order</a>
+      </div>
+
+      <!-- ────── Gobhi Paratha ────── -->
+      <div class="paratha-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Gobhi Paratha Meal                            │
+        │  <img src="YOUR_GOBHI_PARATHA_IMAGE_URL"              │
+        │       alt="Gobhi Paratha Meal">                       │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="paratha-img-wrap steam-wrap" style="background:linear-gradient(135deg,#4A6020,#90B040)">
+          🥦
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_GOBHI_PARATHA_IMAGE_URL" alt="Gobhi Paratha Meal"> -->
+        </div>
+        <h3>Gobhi Paratha Meal</h3>
+        <p>Golden gobhi-stuffed parathas with butter, curd, chutney &amp; pickle.</p>
+        <div class="paratha-price">₹140</div>
+        <!-- CHANGE LINK -->
+        <a href="https://wa.me/918376044136?text=I+want+to+order+Gobhi+Paratha+Meal" target="_blank"
+          class="order-btn">Order</a>
+      </div>
+
+      <!-- ────── Paneer Paratha ────── -->
+      <div class="paratha-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Paneer Paratha Meal                           │
+        │  <img src="YOUR_PANEER_PARATHA_IMAGE_URL"             │
+        │       alt="Paneer Paratha Meal">                      │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="paratha-img-wrap steam-wrap" style="background:linear-gradient(135deg,#3A6040,#70C080)">
+          🧀
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_PANEER_PARATHA_IMAGE_URL" alt="Paneer Paratha Meal"> -->
+        </div>
+        <h3>Paneer Paratha Meal</h3>
+        <p>Rich paneer-stuffed parathas — the premium paratha experience with all toppings.</p>
+        <div class="paratha-price">₹160</div>
+        <!-- CHANGE LINK -->
+        <a href="https://wa.me/918376044136?text=I+want+to+order+Paneer+Paratha+Meal" target="_blank"
+          class="order-btn">Order</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+  SEASONAL + ADDONS SHARED VANTA WRAPPER
+============================================================ -->
+  <div id="seasonal-addons-wrap">
+    <div id="seasonal-addons-vanta-bg"></div>
+
+  <!-- ============================================================
+  SEASONAL SPECIALS
+============================================================ -->
+  <section id="seasonal">
+    <div class="section-eyebrow reveal">— On Availability —</div>
+    <h2 class="section-title reveal">Seasonal &amp;<br>Special Meals</h2>
+    <div class="menu-grid" style="margin-top:60px">
+
+      <!-- ────── Dal + Seasonal Veg ────── -->
+      <div class="menu-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Dal + Seasonal Veg                            │
+        │  <img src="YOUR_DAL_SEASONAL_IMAGE_URL"               │
+        │       alt="Dal Seasonal Veg">                         │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#3a6832,#78c058)">
+          🌿
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_DAL_SEASONAL_IMAGE_URL" alt="Dal Seasonal Veg"> -->
+        </div>
+        <div class="card-body">
+          <h3><span class="veg-dot"></span>Dal + Seasonal Veg</h3>
+          <p>Dal with market-fresh seasonal sabzi, 4 roti, and salad. Changes with the season.</p>
+          <div class="card-footer">
+            <div class="price"><sup>₹</sup>150</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Dal+Seasonal+Veg" target="_blank"
+              class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Aloo Tamatar + Poori ────── -->
+      <div class="menu-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Aloo Tamatar + Poori                          │
+        │  <img src="YOUR_ALOO_TAMATAR_POORI_IMAGE_URL"         │
+        │       alt="Aloo Tamatar Poori">                       │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#8B3A1A,#D47030)">
+          🍅
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_ALOO_TAMATAR_POORI_IMAGE_URL" alt="Aloo Tamatar Poori"> -->
+        </div>
+        <div class="card-body">
+          <h3><span class="veg-dot"></span>Aloo Tamatar + Poori</h3>
+          <p>Tangy aloo tamatar sabzi with 5 crispy pooris, salad, and pickle.</p>
+          <div class="card-footer">
+            <div class="price"><sup>₹</sup>150</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Aloo+Tamatar+Poori" target="_blank"
+              class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Chana Dal Meal ────── -->
+      <div class="menu-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Chana Dal Meal                                │
+        │  <img src="YOUR_CHANA_DAL_IMAGE_URL"                  │
+        │       alt="Chana Dal Meal">                           │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#4e3010,#987040)">
+          🫘
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_CHANA_DAL_IMAGE_URL" alt="Chana Dal Meal"> -->
+        </div>
+        <div class="card-body">
+          <h3><span class="veg-dot"></span>Chana Dal Meal</h3>
+          <p>Hearty chana dal, 4 roti, and salad. Simple, protein-rich, filling.</p>
+          <div class="card-footer">
+            <div class="price"><sup>₹</sup>130</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Chana+Dal+Meal" target="_blank"
+              class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Bhindi Masala ────── -->
+      <div class="menu-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Bhindi Masala                                 │
+        │  <img src="YOUR_BHINDI_MASALA_IMAGE_URL"              │
+        │       alt="Bhindi Masala">                            │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#1B5E20,#4CAF50)">
+          🥒
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_BHINDI_MASALA_IMAGE_URL" alt="Bhindi Masala"> -->
+        </div>
+        <div class="card-body">
+          <h3><span class="veg-dot"></span>Bhindi Masala</h3>
+          <p>Crispy bhindi sabzi in aromatic masala, served with 4 roti and salad.</p>
+          <div class="card-footer">
+            <div class="price"><sup>₹</sup>130</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Bhindi+Masala" target="_blank"
+              class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Aloo Gajar Matar ────── -->
+      <div class="menu-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Aloo Gajar Matar Meal                         │
+        │  <img src="YOUR_ALOO_GAJAR_MATAR_IMAGE_URL"           │
+        │       alt="Aloo Gajar Matar Meal">                    │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#6A4A20,#D09050)">
+          🥕
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_ALOO_GAJAR_MATAR_IMAGE_URL" alt="Aloo Gajar Matar Meal"> -->
+        </div>
+        <div class="card-body">
+          <h3><span class="veg-dot"></span>Aloo Gajar Matar Meal</h3>
+          <p>Aloo gajar matar sabzi with dal, roti, and salad — a classic anytime meal.</p>
+          <div class="card-footer">
+            <div class="price"><sup>₹</sup>150</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Aloo+Gajar+Matar+Meal" target="_blank"
+              class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Aloo Chana Meal ────── -->
+      <div class="menu-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Aloo Chana Meal                               │
+        │  <img src="YOUR_ALOO_CHANA_IMAGE_URL"                 │
+        │       alt="Aloo Chana Meal">                          │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#4E342E,#A07040)">
+          🫘
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_ALOO_CHANA_IMAGE_URL" alt="Aloo Chana Meal"> -->
+        </div>
+        <div class="card-body">
+          <h3><span class="veg-dot"></span>Aloo Chana Meal</h3>
+          <p>Hearty aloo chana sabzi with 4 roti and salad. Filling and flavourful.</p>
+          <div class="card-footer">
+            <div class="price"><sup>₹</sup>140</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Aloo+Chana+Meal" target="_blank"
+              class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Baingan Bharta ────── -->
+      <div class="menu-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Baingan Bharta / Mix Veg                      │
+        │  <img src="YOUR_BAINGAN_BHARTA_IMAGE_URL"             │
+        │       alt="Baingan Bharta">                           │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#4B0082,#8B4FA0)">
+          🍆
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_BAINGAN_BHARTA_IMAGE_URL" alt="Baingan Bharta"> -->
+        </div>
+        <div class="card-body">
+          <h3><span class="veg-dot"></span>Baingan Bharta / Mix Veg</h3>
+          <p>Smoky baingan bharta or mix veg, 4 roti, and salad. Choose your style.</p>
+          <div class="card-footer">
+            <div class="price"><sup>₹</sup>140</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Baingan+Bharta" target="_blank"
+              class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── Palak Paneer Meal ────── -->
+      <div class="menu-card reveal">
+        <!--
+        ┌───────────────────────────────────────────────────────┐
+        │  IMAGE: Palak Paneer Meal                             │
+        │  <img src="YOUR_PALAK_PANEER_IMAGE_URL"               │
+        │       alt="Palak Paneer Meal">                        │
+        └───────────────────────────────────────────────────────┘
+      -->
+        <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#1B5E20,#66BB6A)">
+          🌱
+          <!-- APNI IMAGE YAHAN DAALEN:
+        <img src="YOUR_PALAK_PANEER_IMAGE_URL" alt="Palak Paneer Meal"> -->
+        </div>
+        <div class="card-badge">Premium</div>
+        <div class="card-body">
+          <h3><span class="veg-dot"></span>Palak Paneer Meal</h3>
+          <p>Restaurant-grade palak paneer, 4 roti, and crisp salad. Worth every rupee.</p>
+          <div class="card-footer">
+            <div class="price"><sup>₹</sup>170</div>
+            <!-- CHANGE LINK -->
+            <a href="https://wa.me/918376044136?text=I+want+to+order+Palak+Paneer+Meal" target="_blank"
+              class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ADD-ONS STRIP -->
+  <div id="addons">
+    <div class="addons-inner">
+      <div class="addons-title">Little<br>Extras.</div>
+      <div class="addons-chips">
+        <div class="addon-chip">Extra Roti (2 pcs)<b>₹18</b></div>
+        <div class="addon-chip">Extra Rice<b>₹30</b></div>
+        <div class="addon-chip">Extra Curd<b>₹20</b></div>
+        <div class="addon-chip">Extra Salad<b>₹10</b></div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end #seasonal-addons-wrap -->
+
+  <!-- ============================================================
+  WEEKLY PLAN
+============================================================ -->
+  <section id="weekly">
+    <div class="section-eyebrow reveal" style="color:var(--gold)">— Subscription Customers —</div>
+    <h2 class="section-title reveal" style="color:var(--white)">Your Weekly<br>Meal Calendar</h2>
+    <p class="section-desc reveal" style="color:rgba(255,255,255,0.55)">Curated weekly rotation for monthly plan
+      subscribers. Fully customisable on request.</p>
+    <div class="week-scroll reveal">
+      <div class="week-grid">
+        <div class="day-col">
+          <div class="day-header">MON</div>
+          <div class="day-meal">
+            <div class="meal-slot">🌞 Lunch</div>
+            <div class="meal-name">Rajma gravy, steamed rice, salad</div>
+          </div>
+          <div class="day-meal">
+            <div class="meal-slot">🌙 Dinner</div>
+            <div class="meal-name">Dal, aloo sabzi, 4 roti, salad</div>
+          </div>
+        </div>
+        <div class="day-col">
+          <div class="day-header">TUE</div>
+          <div class="day-meal">
+            <div class="meal-slot">🌞 Lunch</div>
+            <div class="meal-name">Chole masala, steamed rice, salad</div>
+          </div>
+          <div class="day-meal">
+            <div class="meal-slot">🌙 Dinner</div>
+            <div class="meal-name">Mix veg sabzi, 4 roti, salad</div>
+          </div>
+        </div>
+        <div class="day-col">
+          <div class="day-header">WED</div>
+          <div class="day-meal">
+            <div class="meal-slot">🌞 Lunch</div>
+            <div class="meal-name">Kadhi, steamed rice, salad</div>
+          </div>
+          <div class="day-meal">
+            <div class="meal-slot">🌙 Dinner</div>
+            <div class="meal-name">Aloo gajar matar sabzi, 4 roti, salad</div>
+          </div>
+        </div>
+        <div class="day-col">
+          <div class="day-header">THU</div>
+          <div class="day-meal">
+            <div class="meal-slot">🌞 Lunch</div>
+            <div class="meal-name">Paneer sabzi, 4 roti, salad</div>
+          </div>
+          <div class="day-meal">
+            <div class="meal-slot">🌙 Dinner</div>
+            <div class="meal-name">Chana dal, 4 roti, salad</div>
+          </div>
+        </div>
+        <div class="day-col">
+          <div class="day-header">FRI</div>
+          <div class="day-meal">
+            <div class="meal-slot">🌞 Lunch</div>
+            <div class="meal-name">Dal, seasonal sabzi, 4 roti, salad</div>
+          </div>
+          <div class="day-meal">
+            <div class="meal-slot">🌙 Dinner</div>
+            <div class="meal-name">Aloo chana sabzi, 4 roti, salad</div>
+          </div>
+        </div>
+        <div class="day-col">
+          <div class="day-header">SAT</div>
+          <div class="day-meal">
+            <div class="meal-slot">🌞 Lunch</div>
+            <div class="meal-name">Mix veg sabzi, dal, 4 roti, salad</div>
+          </div>
+          <div class="day-meal">
+            <div class="meal-slot">🌙 Dinner</div>
+            <div class="meal-name">Baingan bharta, 4 roti, salad</div>
+          </div>
+        </div>
+        <div class="day-col">
+          <div class="day-header">SUN</div>
+          <div class="day-meal">
+            <div class="meal-slot">🌞 Lunch</div>
+            <div class="meal-name">Poori, aloo sabzi, curd, pickle</div>
+          </div>
+          <div class="day-meal">
+            <div class="meal-slot">🌙 Dinner</div>
+            <div class="meal-name">Palak paneer, 4 roti, salad</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+  MONTHLY PLAN
+============================================================ -->
+  <section id="monthly">
+    <div class="section-eyebrow reveal">— Best Value —</div>
+    <h2 class="section-title reveal">Monthly Meal<br>Subscription</h2>
+    <p class="section-desc reveal" style="color:#aaaaaa">Lunch + Dinner, every single day. The smartest way to eat well.</p>
+    <div class="monthly-wrap reveal">
+      <div class="monthly-price-block">
+        <div class="big-price">₹4K</div>
+        <div class="big-price-label">Per Month · Per Person</div>
+      </div>
+      <div class="monthly-features">
+        <h3>Everything you need. Nothing you don't.</h3>
+        <ul class="feat-list">
+          <li>Lunch + Dinner delivered daily, 7 days a week</li>
+          <li>Curated rotating weekly menu — never repetitive</li>
+          <li>Fully customisable — tell us your preferences</li>
+          <li>Served for 1 person per plan</li>
+          <li>Price may vary for personalised menus</li>
+          <li>WhatsApp ordering — no apps, no logins</li>
+          <li>Supertech Czar Suites &amp; Bennett University delivery</li>
+        </ul>
+        <!-- CHANGE LINK: Monthly plan WhatsApp link -->
+        <a href="https://wa.me/918376044136?text=I+want+the+Monthly+Meal+Plan+at+Rs+4000" target="_blank"
+          class="monthly-cta">Subscribe for ₹4000/Month</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-eyebrow reveal" style="color:var(--gold)">— Get In Touch —</div>
+    <h2 class="section-title reveal" style="color:var(--white)">Order Now.<br>Eat Better.</h2>
+    <p style="color:rgba(255,255,255,0.45);max-width:460px;margin:0 auto;line-height:1.85;font-size:15px"
+      class="reveal">Place your order a little in advance for single meals — we'll get it to you hot and fresh.</p>
+    <div class="contact-grid">
+      <div class="contact-card reveal">
+        <div class="c-icon">📱</div>
+        <h4>WhatsApp / Call</h4>
+        <!-- CHANGE: Update the number if it has changed -->
+        <a href="https://wa.me/918376044136" target="_blank">+91 8376044136</a>
+      </div>
+      <div class="contact-card reveal">
+        <div class="c-icon">📧</div>
+        <h4>Email</h4>
+        <!-- CHANGE: Update the email if it has changed -->
+        <a href="mailto:freshplatecofpc@gmail.com">freshplatecofpc@gmail.com</a>
+      </div>
+      <div class="contact-card reveal">
+        <div class="c-icon">📍</div>
+        <h4>Delivery Zone</h4>
+        <p>Supertech Czar Suites,<br>Bennett University &amp; nearby</p>
+      </div>
+      <div class="contact-card reveal">
+        <div class="c-icon">⏰</div>
+        <h4>Delivery Hours</h4>
+        <p>Lunch: 2 PM – 5 PM<br>Dinner: 7 PM – 11 PM</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">FPC · Fresh Plate &amp; Co</div>
+    <p>© 2025 Fresh Plate &amp; Co. Premium home-style meals. All rights reserved.</p>
+    <p style="color:rgba(255,255,255,0.18)">Supertech Czar Suites · Bennett University · Greater Noida</p>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.transitionDelay = (i % 5) * 0.08 + 's';
+      observer.observe(el);
+    });
+
+    function filterCat(cat, btn) {
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Show all menu categories by default when clicking an external section
+      if (['thali', 'paratha', 'seasonal'].includes(cat)) {
+        document.querySelectorAll('.menu-cat').forEach(s => s.style.display = '');
+        document.getElementById(cat).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      document.querySelectorAll('.menu-cat').forEach(s => {
+        s.style.display = (cat === 'all' || s.dataset.cat === cat) ? '' : 'none';
+      });
+    }
+
+    // ══════ DASHBOARD LOGIC ══════
+    const FPC_MEALS = [
+      { name: "Dal + Aloo Sabzi Meal", time: "Lunch", cal: 480, prot: 14, carb: 78, fat: 10 },
+      { name: "Paneer Meal", time: "Lunch", cal: 550, prot: 22, carb: 72, fat: 16 },
+      { name: "Rajma Rice Bowl", time: "Lunch", cal: 510, prot: 18, carb: 82, fat: 9 },
+      { name: "Protein Rajma Bowl", time: "Lunch", cal: 590, prot: 28, carb: 78, fat: 14 },
+      { name: "Kadhi Rice Meal", time: "Lunch", cal: 490, prot: 12, carb: 80, fat: 13 },
+      { name: "Yellow Dal Rice", time: "Lunch", cal: 390, prot: 12, carb: 72, fat: 7 },
+      { name: "Mix Veg + Dal Meal", time: "Lunch", cal: 460, prot: 13, carb: 76, fat: 9 },
+      { name: "Poori Aloo Special", time: "Lunch", cal: 530, prot: 11, carb: 84, fat: 16 },
+      { name: "Chole Rice Bowl", time: "Lunch", cal: 500, prot: 16, carb: 84, fat: 8 },
+      { name: "Aloo Paratha Meal", time: "Breakfast", cal: 480, prot: 10, carb: 70, fat: 18 },
+      { name: "Gobhi Paratha Meal", time: "Breakfast", cal: 460, prot: 9, carb: 68, fat: 17 },
+      { name: "Paneer Paratha Meal", time: "Breakfast", cal: 560, prot: 20, carb: 68, fat: 22 },
+      { name: "Regular Veg Thali", time: "Dinner", cal: 620, prot: 18, carb: 96, fat: 14 },
+      { name: "Paneer Thali", time: "Dinner", cal: 720, prot: 30, carb: 92, fat: 20 },
+      { name: "Special Thali", time: "Dinner", cal: 800, prot: 34, carb: 100, fat: 24 },
+      { name: "Palak Paneer Meal", time: "Dinner", cal: 560, prot: 24, carb: 72, fat: 18 },
+      { name: "Dal Rice Combo", time: "Lunch", cal: 380, prot: 12, carb: 72, fat: 7 },
+      { name: "Aloo Sabzi + 4 Roti", time: "Dinner", cal: 440, prot: 10, carb: 76, fat: 11 },
+    ];
+
+    let todayMeals = JSON.parse(localStorage.getItem('fpc_meals_' + getTodayKey()) || '[]');
+    let maintenanceCal = parseInt(localStorage.getItem('fpc_maintenance') || '0');
+
+    function getTodayKey() {
+      const d = new Date();
+      return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    }
+
+    function openDash() { document.getElementById('dashModal').classList.add('open'); renderDash(); renderMeals(); }
+    function closeDash() { document.getElementById('dashModal').classList.remove('open'); }
+
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.modal-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      btn.classList.add('active');
+      if (tab === 'log') renderMeals();
+      if (tab === 'tracker') renderDash();
+    }
+
+    function renderDash() {
+      const d = new Date();
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      document.getElementById('todayDate').textContent = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+      document.getElementById('mealCountLabel').textContent = todayMeals.length + ' meal' + (todayMeals.length !== 1 ? 's' : '') + ' logged today';
+
+      let totCal = 0, totProt = 0, totCarb = 0, totFat = 0;
+      todayMeals.forEach(m => { totCal += m.cal; totProt += m.prot; totCarb += m.carb; totFat += m.fat; });
+
+      document.getElementById('totCal').textContent = totCal;
+      document.getElementById('totProt').textContent = totProt + 'g';
+      document.getElementById('totCarb').textContent = totCarb + 'g';
+      document.getElementById('totFat').textContent = totFat + 'g';
+
+      const goalCal = maintenanceCal || 2000;
+      document.getElementById('calGoalSub').textContent = 'Goal: ' + goalCal + ' kcal';
+      document.getElementById('calBar-label').textContent = totCal + ' / ' + goalCal + ' kcal';
+      document.getElementById('protBar-label').textContent = totProt + 'g';
+      document.getElementById('carbBar-label').textContent = totCarb + 'g';
+      document.getElementById('fatBar-label').textContent = totFat + 'g';
+
+      document.getElementById('calBar').style.width = Math.min(100, (totCal / goalCal) * 100) + '%';
+      document.getElementById('protBar').style.width = Math.min(100, (totProt / 150) * 100) + '%';
+      document.getElementById('carbBar').style.width = Math.min(100, (totCarb / 250) * 100) + '%';
+      document.getElementById('fatBar').style.width = Math.min(100, (totFat / 70) * 100) + '%';
+
+      const list = document.getElementById('trackerMealList');
+      document.getElementById('trackerEmpty').style.display = todayMeals.length ? 'none' : '';
+      const existing = list.querySelectorAll('.meal-entry');
+      existing.forEach(e => e.remove());
+      todayMeals.forEach((m, i) => {
+        const el = document.createElement('div');
+        el.className = 'meal-entry';
+        el.innerHTML = `<div class="me-info"><div class="me-name">${m.name}</div><div class="me-time">${m.time} · ${m.loggedAt}</div></div><div class="me-macros"><span>🔥 <b>${m.cal}</b> kcal</span><span>💪 <b>${m.prot}g</b> protein</span></div><button class="me-del" onclick="deleteMeal(${i})">✕</button>`;
+        list.appendChild(el);
+      });
+    }
+
+    function renderMeals() {
+      const list = document.getElementById('logMealList');
+      document.getElementById('logEmpty').style.display = todayMeals.length ? 'none' : '';
+      const existing = list.querySelectorAll('.meal-entry');
+      existing.forEach(e => e.remove());
+      todayMeals.forEach((m, i) => {
+        const el = document.createElement('div');
+        el.className = 'meal-entry';
+        el.innerHTML = `<div class="me-info"><div class="me-name">${m.name}</div><div class="me-time">${m.time} · ${m.loggedAt}</div></div><div class="me-macros"><span>🔥 <b>${m.cal}</b></span><span>💪 <b>${m.prot}g</b></span><span>🌾 <b>${m.carb}g</b></span><span>🫒 <b>${m.fat}g</b></span></div><button class="me-del" onclick="deleteMeal(${i})">✕</button>`;
+        list.appendChild(el);
+      });
+
+      // Quick add chips
+      const chips = document.getElementById('quickAddChips');
+      chips.innerHTML = '';
+      FPC_MEALS.slice(0, 8).forEach(m => {
+        const b = document.createElement('button');
+        b.className = 'q-chip';
+        b.textContent = m.name;
+        b.onclick = () => quickAddMeal(m);
+        chips.appendChild(b);
+      });
+    }
+
+    function addMeal() {
+      const name = document.getElementById('mealName').value.trim();
+      const time = document.getElementById('mealTime').value;
+      const cal = parseInt(document.getElementById('mealCal').value) || 0;
+      const prot = parseInt(document.getElementById('mealProt').value) || 0;
+      const carb = parseInt(document.getElementById('mealCarb').value) || 0;
+      const fat = parseInt(document.getElementById('mealFat').value) || 0;
+      if (!name || !cal) { alert('Please enter meal name and calories.'); return; }
+      const now = new Date();
+      const t = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+      todayMeals.push({ name, time, cal, prot, carb, fat, loggedAt: t });
+      saveMeals();
+      ['mealName', 'mealCal', 'mealProt', 'mealCarb', 'mealFat'].forEach(id => document.getElementById(id).value = '');
+      renderMeals();
+      renderDash();
+    }
+
+    function quickAddMeal(m) {
+      const now = new Date();
+      const t = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+      todayMeals.push({ ...m, loggedAt: t });
+      saveMeals();
+      renderMeals();
+      renderDash();
+      // Flash feedback
+      const btn = event.target;
+      const orig = btn.textContent;
+      btn.textContent = '✓ Added!';
+      btn.style.background = 'rgba(42,87,50,.4)';
+      btn.style.borderColor = 'var(--green-lt)';
+      btn.style.color = 'var(--green-lt)';
+      setTimeout(() => { btn.textContent = orig; btn.style = ''; }, 1500);
+    }
+
+    function deleteMeal(idx) {
+      todayMeals.splice(idx, 1);
+      saveMeals();
+      renderMeals();
+      renderDash();
+    }
+
+    function resetDay() {
+      if (confirm('Reset all meals for today? This cannot be undone.')) {
+        todayMeals = [];
+        saveMeals();
+        renderDash();
+        renderMeals();
+      }
+    }
+
+    function saveMeals() {
+      localStorage.setItem('fpc_meals_' + getTodayKey(), JSON.stringify(todayMeals));
+    }
+
+    function calcMaintenance() {
+      const age = parseInt(document.getElementById('calcAge').value);
+      const gender = document.getElementById('calcGender').value;
+      const weight = parseFloat(document.getElementById('calcWeight').value);
+      const height = parseFloat(document.getElementById('calcHeight').value);
+      const activity = parseFloat(document.getElementById('calcActivity').value);
+      if (!age || !weight || !height) { alert('Please fill in all fields.'); return; }
+
+      let bmr;
+      if (gender === 'male') bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+      else bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+      const tdee = Math.round(bmr * activity);
+
+      document.getElementById('calcResult').textContent = tdee;
+      document.getElementById('goalLoss').textContent = tdee - 500;
+      document.getElementById('goalMaintain').textContent = tdee;
+      document.getElementById('goalGain').textContent = tdee + 300;
+      document.getElementById('calcResultBox').style.display = '';
+
+      maintenanceCal = tdee;
+      localStorage.setItem('fpc_maintenance', tdee);
+
+      const mealsNeeded = Math.ceil(tdee / 500);
+      document.getElementById('calcFPCTip').innerHTML = `💡 <b style="color:var(--gold)">FPC Tip:</b> At ${tdee} kcal/day, you need roughly ${mealsNeeded} FPC meals daily to hit your maintenance. Our <a href="#monthly" style="color:var(--gold-lt)">Monthly Plan at ₹4000</a> gives you lunch + dinner every day — perfect for staying on track.`;
+    }
+
+    // ══════ AI ASSISTANT LOGIC ══════
+    let aiHistory = [];
+    let aiOpen = false;
+    const API_URL = 'https://text.pollinations.ai/openai';
+
+    const SYSTEM_PROMPT = `You are FPC Assistant, a helpful and warm AI for Fresh Plate & Co — a premium home-style vegetarian meal delivery service based near Bennett University and Supertech Czar Suites, Greater Noida. 
+
+MENU & PRICING:
+Signature Meals: Dal+Aloo Sabzi ₹150, Paneer Meal ₹160, Kadhi Rice ₹150, Mix Veg+Dal ₹160, Poori Aloo Special ₹170, Palak Paneer ₹170
+Rice Bowls: Rajma Rice ₹160, Protein Rajma Bowl ₹180, Chole Rice ₹160, Yellow Dal Rice ₹110
+Thalis: Regular Veg ₹150, Paneer Thali ₹170, Special Thali ₹210
+Parathas (with butter/curd/chutney/pickle): Aloo ₹130, Aloo-Pyaaz ₹135, Gobhi ₹140, Paneer ₹160
+Combos: Dal+Rice ₹110, Aloo Sabzi+Roti ₹130
+Add-ons: Extra Roti ₹18, Extra Rice ₹30, Extra Curd ₹20, Extra Salad ₹10
+Monthly Plan: ₹4000/month/person — lunch + dinner daily, 7 days/week
+
+DELIVERY: Lunch 2–5 PM, Dinner 7–11 PM, Mon–Sun. WhatsApp: +91 8376044136
+
+Be conversational, helpful, and enthusiastic about food. Keep replies concise (2-4 sentences max unless asked for detail). You can help with meal recommendations, nutrition info, ordering process, and general food/diet advice. When recommending meals, match them to the user's goals (budget, protein, taste). Always end with a relevant suggestion or action.`;
+
+    function toggleAI() {
+      aiOpen = !aiOpen;
+      const win = document.getElementById('ai-window');
+      win.classList.toggle('open', aiOpen);
+      if (aiOpen && aiHistory.length === 0) {
+        addAIMsg('ai', "Hello! 👋 I'm your FPC assistant. I can help you explore the menu, find the best meal for your goals, or guide you on ordering. What are you craving today?");
+      }
+    }
+
+    function addAIMsg(role, text) {
+      const msgs = document.getElementById('aiMessages');
+      document.getElementById('aiChips').style.display = 'none';
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.innerHTML = `<div class="msg-avatar">${role === 'ai' ? '🍽️' : '👤'}</div><div class="msg-bubble">${text}</div>`;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function showTyping() {
+      const msgs = document.getElementById('aiMessages');
+      const div = document.createElement('div');
+      div.className = 'msg ai';
+      div.id = 'ai-typing-indicator';
+      div.innerHTML = `<div class="msg-avatar">🍽️</div><div class="msg-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function removeTyping() {
+      const t = document.getElementById('ai-typing-indicator');
+      if (t) t.remove();
+    }
+
+    async function sendAI() {
+      const input = document.getElementById('aiInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      input.value = '';
+      addAIMsg('user', msg);
+      aiHistory.push({ role: 'user', content: msg });
+      showTyping();
+      try {
+        const res = await fetch('http://localhost:3001/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system: SYSTEM_PROMPT,
+            messages: aiHistory
+          })
+        });
+
+        removeTyping();
+
+        if (!res.ok) throw new Error('API Error');
+        const data = await res.json();
+        
+        let aiReply = "Sorry, I couldn't understand that.";
+        if (data.success && data.content && data.content[0] && data.content[0].text) {
+          aiReply = data.content[0].text;
+        }
+
+        // Create the AI bubble with the full response
+        const msgs = document.getElementById('aiMessages');
+        const div = document.createElement('div');
+        div.className = 'msg ai';
+        div.innerHTML = `<div class="msg-avatar">🍽️</div><div class="msg-bubble">${aiReply.replace(/\n/g, '<br>')}</div>`;
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+
+        aiHistory.push({ role: 'assistant', content: aiReply });
+      } catch (e) {
+        removeTyping();
+        addAIMsg('ai', 'Oops! Something went wrong. Please try again or WhatsApp us directly at +91 8376044136.');
+      }
+    }
+
+    function quickAsk(q) {
+      document.getElementById('aiInput').value = q;
+      sendAI();
+    }
+
+    // Init quick-add chips
+    document.addEventListener('DOMContentLoaded', () => {
+      // Nothing needed on load, rendered on demand
+    });
+
+  </script>
+  <!-- ══════════════════════════════════════════
+  USER DASHBOARD MODAL
+══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="dashModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeDash()">✕</button>
+      <div class="modal-header">
+        <h2>MY DASHBOARD</h2>
+        <p>Track your meals, macros & maintenance calories — all in one place.</p>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('tracker',this)">📊 Today's Tracker</button>
+        <button class="modal-tab" onclick="switchTab('log',this)">🍛 Log a Meal</button>
+        <button class="modal-tab" onclick="switchTab('calculator',this)">⚡ Maintenance Cal</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- TAB 1: TODAY'S TRACKER -->
+        <div class="tab-panel active" id="tab-tracker">
+          <div class="date-bar">
+            <div>
+              <h3 id="todayDate"></h3>
+              <div style="font-size:12px;color:rgba(255,255,255,.35);margin-top:2px" id="mealCountLabel">0 meals logged
+                today</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span class="today-badge">LIVE</span>
+              <button class="reset-day" onclick="resetDay()">Reset Day</button>
+            </div>
+          </div>
+
+          <div class="dash-stats">
+            <div class="dash-stat">
+              <div class="ds-val" id="totCal">0</div>
+              <div class="ds-label">Calories</div>
+              <div class="ds-sub" id="calGoalSub">Goal: — kcal</div>
+            </div>
+            <div class="dash-stat">
+              <div class="ds-val" id="totProt">0g</div>
+              <div class="ds-label">Protein</div>
+              <div class="ds-sub">Target: 0.8g/kg</div>
+            </div>
+            <div class="dash-stat">
+              <div class="ds-val" id="totCarb">0g</div>
+              <div class="ds-label">Carbs</div>
+              <div class="ds-sub">Daily Total</div>
+            </div>
+            <div class="dash-stat">
+              <div class="ds-val" id="totFat">0g</div>
+              <div class="ds-label">Fat</div>
+              <div class="ds-sub">Daily Total</div>
+            </div>
+          </div>
+
+          <div class="macro-row">
+            <div class="macro-label"><span>🔥 Calories</span><span id="calBar-label">0 / — kcal</span></div>
+            <div class="macro-bar-bg">
+              <div class="macro-bar-fill bar-cal" id="calBar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="macro-row">
+            <div class="macro-label"><span>💪 Protein</span><span id="protBar-label">0g</span></div>
+            <div class="macro-bar-bg">
+              <div class="macro-bar-fill bar-prot" id="protBar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="macro-row">
+            <div class="macro-label"><span>🌾 Carbs</span><span id="carbBar-label">0g</span></div>
+            <div class="macro-bar-bg">
+              <div class="macro-bar-fill bar-carb" id="carbBar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="macro-row" style="margin-bottom:28px">
+            <div class="macro-label"><span>🫒 Fat</span><span id="fatBar-label">0g</span></div>
+            <div class="macro-bar-bg">
+              <div class="macro-bar-fill bar-fat" id="fatBar" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div
+            style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px">
+            Today's Meals</div>
+          <div class="logged-meals" id="trackerMealList">
+            <div class="empty-log" id="trackerEmpty">No meals logged yet. Go to "Log a Meal" to add your first one! 🍛
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: LOG A MEAL -->
+        <div class="tab-panel" id="tab-log">
+          <div class="meal-log-form">
+            <h4>Add a Meal Entry</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Meal Name</label>
+                <input type="text" id="mealName" placeholder="e.g. Rajma Rice Bowl" />
+              </div>
+              <div class="form-group">
+                <label>Meal Time</label>
+                <select id="mealTime">
+                  <option value="Breakfast">🌅 Breakfast</option>
+                  <option value="Lunch" selected>🌞 Lunch</option>
+                  <option value="Snack">☕ Snack</option>
+                  <option value="Dinner">🌙 Dinner</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row three">
+              <div class="form-group">
+                <label>Calories (kcal)</label>
+                <input type="number" id="mealCal" placeholder="450" min="0" />
+              </div>
+              <div class="form-group">
+                <label>Protein (g)</label>
+                <input type="number" id="mealProt" placeholder="18" min="0" />
+              </div>
+              <div class="form-group">
+                <label>Carbs (g)</label>
+                <input type="number" id="mealCarb" placeholder="65" min="0" />
+              </div>
+            </div>
+            <div class="form-row" style="grid-template-columns:1fr auto;align-items:flex-end">
+              <div class="form-group">
+                <label>Fat (g)</label>
+                <input type="number" id="mealFat" placeholder="12" min="0" />
+              </div>
+              <button class="btn-add-meal" onclick="addMeal()">+ Log Meal</button>
+            </div>
+
+            <div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)">
+              <div
+                style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(201,148,42,.7);margin-bottom:12px">
+                Quick Add — FPC Meals</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px" id="quickAddChips"></div>
+            </div>
+          </div>
+
+          <div
+            style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px">
+            All Logged Meals Today</div>
+          <div class="logged-meals" id="logMealList">
+            <div class="empty-log" id="logEmpty">No meals yet. Add your first one above! 🌿</div>
+          </div>
+        </div>
+
+        <!-- TAB 3: MAINTENANCE CALCULATOR -->
+        <div class="tab-panel" id="tab-calculator">
+          <div class="calc-section">
+            <h4>Your Details</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Age (years)</label>
+                <input type="number" id="calcAge" placeholder="22" min="10" max="100" />
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <select id="calcGender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Weight (kg)</label>
+                <input type="number" id="calcWeight" placeholder="70" min="30" max="250" />
+              </div>
+              <div class="form-group">
+                <label>Height (cm)</label>
+                <input type="number" id="calcHeight" placeholder="175" min="100" max="250" />
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label>Activity Level</label>
+              <select id="calcActivity">
+                <option value="1.2">Sedentary (desk job, little/no exercise)</option>
+                <option value="1.375">Light (1–3 days exercise/week)</option>
+                <option value="1.55" selected>Moderate (3–5 days exercise/week)</option>
+                <option value="1.725">Active (6–7 days hard exercise)</option>
+                <option value="1.9">Very Active (physical job + exercise)</option>
+              </select>
+            </div>
+            <button class="btn-add-meal" style="width:100%" onclick="calcMaintenance()">Calculate My
+              Maintenance</button>
+          </div>
+
+          <div class="calc-result-box" id="calcResultBox" style="display:none">
+            <div class="cr-label">Your Maintenance Calories</div>
+            <div class="cr-main" id="calcResult">—</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:4px">kcal / day</div>
+            <div class="calc-goals">
+              <div class="calc-goal loss">
+                <div class="cg-val" id="goalLoss">—</div>
+                <div class="cg-name">Weight Loss</div>
+              </div>
+              <div class="calc-goal maintain">
+                <div class="cg-val" id="goalMaintain">—</div>
+                <div class="cg-name">Maintain</div>
+              </div>
+              <div class="calc-goal gain">
+                <div class="cg-val" id="goalGain">—</div>
+                <div class="cg-name">Weight Gain</div>
+              </div>
+            </div>
+            <div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
+              <div style="font-size:12px;color:rgba(255,255,255,.35);line-height:1.7" id="calcFPCTip"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+  AI ASSISTANT — VOID
+══════════════════════════════════════════ -->
+  <div id="ai-fab">
+    <div id="ai-window">
+      <div class="ai-header">
+        <div class="ai-avatar">🍽️</div>
+        <div class="ai-header-info">
+          <h4>FPC Assistant</h4>
+          <p>Powered by AI · Always here</p>
+        </div>
+        <button class="ai-header-close" onclick="toggleAI()">✕</button>
+      </div>
+      <div class="ai-messages" id="aiMessages"></div>
+      <div class="ai-quick-chips" id="aiChips">
+        <button class="q-chip" onclick="quickAsk('What meals are available today?')">Today's menu?</button>
+        <button class="q-chip" onclick="quickAsk('What is the monthly plan?')">Monthly plan?</button>
+        <button class="q-chip" onclick="quickAsk('How do I order?')">How to order?</button>
+        <button class="q-chip" onclick="quickAsk('What are the delivery timings?')">Delivery timings?</button>
+      </div>
+      <div class="ai-input-row">
+        <input class="ai-input" id="aiInput" placeholder="Ask me anything about FPC…"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAI()}" />
+        <button class="ai-send" onclick="sendAI()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <button class="ai-toggle" onclick="toggleAI()" title="FPC AI Assistant">
+      <div class="ai-pulse"></div>
+      <span style="position:relative;z-index:1">🍽️</span>
+      <div class="ai-badge-dot"></div>
+    </button>
+  </div>
+
+  <!-- LIQUID CURSOR BLOB -->
+  <div id="cursor-blob"></div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════
+       1. LIQUID CURSOR BLOB
+    ═══════════════════════════════════════════════════ */
+    (function () {
+      const blob = document.getElementById('cursor-blob');
+      let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+      let cx = mx, cy = my;
+      const interactables = 'a,button,.menu-card,.thali-card,.paratha-card,.combo-card,.pm-item';
+
+      document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+      let raf;
+      function loop() {
+        cx += (mx - cx) * 0.09;
+        cy += (my - cy) * 0.09;
+        blob.style.left = cx + 'px';
+        blob.style.top = cy + 'px';
+        raf = requestAnimationFrame(loop);
+      }
+      loop();
+
+      document.querySelectorAll(interactables).forEach(el => {
+        el.addEventListener('mouseenter', () => blob.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => blob.classList.remove('hovering'));
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════
+       2. SPICE PARTICLE CANVAS (hero)
+    ═══════════════════════════════════════════════════ */
+    (function () {
+      const canvases = document.querySelectorAll('.spice-canvas');
+      if (canvases.length === 0) return;
+      
+      canvases.forEach(canvas => {
+        const ctx = canvas.getContext('2d');
+        const parent = canvas.parentElement;
+
+        function resize() {
+          canvas.width = parent.offsetWidth;
+          canvas.height = parent.offsetHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Spice shapes: tiny dots, seeds, star-shapes
+        const COLORS = ['#ffa7c3', '#c9942a', '#bb93c7', '#f6c1ff', '#ffffff'];
+        const SHAPES = ['dot', 'seed', 'cross'];
+
+        class Particle {
+          constructor() {
+            this.reset(true);
+          }
+          reset(init) {
+            this.x = Math.random() * canvas.width;
+            this.y = init ? Math.random() * canvas.height : canvas.height + 10;
+            this.size = 1.2 + Math.random() * 3.5;
+            this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+            this.shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+            this.speedY = 0.2 + Math.random() * 0.55;
+            this.speedX = (Math.random() - 0.5) * 0.35;
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotSpeed = (Math.random() - 0.5) * 0.04;
+            this.opacity = 0.15 + Math.random() * 0.55;
+            this.wobble = Math.random() * Math.PI * 2;
+            this.wobbleSpeed = 0.01 + Math.random() * 0.02;
+          }
+          draw() {
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            ctx.fillStyle = this.color;
+            ctx.strokeStyle = this.color;
+
+            if (this.shape === 'dot') {
+              ctx.beginPath();
+              ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+              ctx.fill();
+            } else if (this.shape === 'seed') {
+              ctx.beginPath();
+              ctx.ellipse(0, 0, this.size * 0.55, this.size * 1.6, 0, 0, Math.PI * 2);
+              ctx.fill();
+            } else { // cross / star
+              ctx.lineWidth = 1.2;
+              for (let i = 0; i < 4; i++) {
+                ctx.beginPath();
+                ctx.moveTo(-this.size, 0);
+                ctx.lineTo(this.size, 0);
+                ctx.stroke();
+                ctx.rotate(Math.PI / 4);
+              }
+            }
+            ctx.restore();
+          }
+          update() {
+            this.wobble += this.wobbleSpeed;
+            this.x += this.speedX + Math.sin(this.wobble) * 0.25;
+            this.y -= this.speedY;
+            this.rotation += this.rotSpeed;
+            if (this.y < -10) this.reset(false);
+          }
+        }
+
+        const particles = Array.from({ length: 68 }, () => new Particle());
+
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(p => { p.update(); p.draw(); });
+          requestAnimationFrame(animate);
+        }
+        animate();
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════
+       3. SECTION TITLE underline reveal on scroll
+    ═══════════════════════════════════════════════════ */
+    (function () {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('underlined'); });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('.section-title').forEach(el => obs.observe(el));
+    })();
+
+    /* ═══════════════════════════════════════════════════
+       4. MAGNETIC BUTTONS
+    ═══════════════════════════════════════════════════ */
+    (function () {
+      const STRENGTH = 0.36;
+      const btns = document.querySelectorAll('.btn-gold,.btn-ghost,.monthly-cta');
+
+      btns.forEach(btn => {
+        btn.addEventListener('mousemove', e => {
+          const r = btn.getBoundingClientRect();
+          const dx = e.clientX - (r.left + r.width / 2);
+          const dy = e.clientY - (r.top + r.height / 2);
+          btn.style.transform = `translate(${dx * STRENGTH}px, ${dy * STRENGTH}px) translateY(-2px)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = '';
+          btn.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+          setTimeout(() => btn.style.transition = '', 500);
+        });
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════
+       5. MENU CARD 3-D TILT
+    ═══════════════════════════════════════════════════ */
+    (function () {
+      const cards = document.querySelectorAll('.menu-card,.thali-card,.paratha-card,.combo-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - 0.5;
+          const y = (e.clientY - r.top) / r.height - 0.5;
+          card.style.transform = `perspective(700px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateY(-7px)`;
+          card.style.boxShadow = `${-x * 18}px ${-y * 18}px 40px rgba(0,0,0,0.18)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+          card.style.boxShadow = '';
+        });
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════
+       6. COUNTER ROLL — price numbers count up on reveal
+    ═══════════════════════════════════════════════════ */
+    (function () {
+      function rollUp(el) {
+        if (el.dataset.rolled) return;
+        el.dataset.rolled = '1';
+        const raw = el.innerText.replace(/[^\d]/g, '');
+        const end = parseInt(raw, 10);
+        if (!end) return;
+        const prefix = el.querySelector('sup') ? '₹' : '';
+        const duration = 700;
+        const start = Date.now();
+        const startVal = Math.max(0, end - Math.round(end * 0.35));
+
+        function tick() {
+          const elapsed = Date.now() - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const cur = Math.round(startVal + (end - startVal) * ease);
+          // keep the sup if present
+          const sup = el.querySelector('sup');
+          if (sup) {
+            sup.textContent = '₹';
+            el.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = cur; });
+          } else {
+            el.textContent = cur;
+          }
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) rollUp(e.target); });
+      }, { threshold: 0.6 });
+
+      document.querySelectorAll('.price,.paratha-price,.thali-price,.combo-price').forEach(el => obs.observe(el));
+    })();
+  </script>
+
+  <!-- ================================================================
+  AUTH CSS — Login / Register / Admin Modals
+================================================================ -->
+  <style>
+    /* ── AUTH MODAL BASE ── */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .auth-overlay.open {
+      display: flex;
+    }
+
+    .auth-box {
+      background: #1C1C1E;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      overflow: hidden;
+      animation: authSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+    }
+
+    @keyframes authSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* Removed colored top borders */
+    .auth-box::before,
+    .auth-box.admin-box::before {
+      display: none;
+    }
+
+    .auth-box.admin-box {
+      border-color: rgba(255, 255, 255, 0.08);
+      max-width: 400px;
+    }
+
+    .auth-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 16px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, transform .2s;
+      z-index: 2;
+    }
+
+    .auth-close:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .auth-head {
+      padding: 36px 32px 24px;
+      text-align: center;
+    }
+
+    /* Hide chapri emojis */
+    .auth-icon {
+      display: none;
+    }
+
+    .auth-head h2 {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .auth-box.admin-box .auth-head h2 {
+      color: #FFFFFF;
+    }
+
+    .auth-head p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    .auth-body {
+      padding: 0 32px 32px;
+    }
+
+    .auth-field {
+      margin-bottom: 16px;
+    }
+
+    .auth-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 6px;
+    }
+
+    .auth-field input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 15px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      outline: none;
+      transition: all .2s;
+    }
+    
+    .auth-field input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .auth-field input:focus {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .auth-box.admin-box .auth-field input:focus {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .auth-btn {
+      width: 100%;
+      background: #FFFFFF;
+      color: #000000;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      margin-top: 10px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .auth-btn:hover {
+      opacity: 0.9;
+      transform: scale(0.98);
+      background: #FFFFFF;
+    }
+
+    .auth-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-box.admin-box .auth-btn {
+      background: #FFFFFF;
+      color: #000000;
+    }
+
+    .auth-box.admin-box .auth-btn:hover {
+      opacity: 0.9;
+      filter: none;
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.38);
+    }
+
+    .auth-switch a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color .2s;
+    }
+
+    .auth-switch a:hover {
+      color: var(--gold-lt);
+    }
+
+    .auth-error {
+      background: rgba(239, 83, 80, 0.12);
+      border: 1px solid rgba(239, 83, 80, 0.3);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 13px;
+      color: #ef8b89;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .auth-success {
+      background: rgba(76, 175, 80, 0.12);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 13px;
+      color: #81c784;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .auth-divider span {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.25);
+      letter-spacing: 1.5px;
+    }
+
+    /* Admin trigger in nav — small link */
+    .admin-portal-link {
+      position: fixed;
+      bottom: 20px;
+      left: 24px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+      z-index: 5000;
+      transition: color .3s;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .admin-portal-link:hover {
+      color: rgba(255, 107, 53, 0.7);
+    }
+
+    /* nav auth link style */
+    .nav-link-auth {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+      transition: color .2s;
+      padding: 9px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+
+    .nav-link-auth:hover {
+      color: var(--gold);
+      border-color: rgba(201, 148, 42, 0.4);
+    }
+
+    /* User Dashboard Panel (shown after login) */
+    .user-dash-panel {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(201, 148, 42, 0.15);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+
+    .user-dash-panel h3 {
+      font-family: var(--display);
+      font-size: 22px;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .user-dash-panel p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    /* Admin badge in dashboard */
+    #admin-panel-section {
+      display: none;
+      background: rgba(255, 107, 53, 0.06);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+
+    #admin-panel-section h3 {
+      font-family: var(--display);
+      font-size: 22px;
+      color: #f7c59f;
+      margin-bottom: 14px;
+    }
+
+    .admin-user-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .admin-user-table th {
+      text-align: left;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 107, 53, 0.7);
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255, 107, 53, 0.15);
+    }
+
+    .admin-user-table td {
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .admin-del-btn {
+      background: none;
+      border: 1px solid rgba(239, 83, 80, 0.3);
+      color: rgba(239, 83, 80, 0.7);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .admin-del-btn:hover {
+      background: rgba(239, 83, 80, 0.15);
+      color: #ef5350;
+    }
+  </style>
+
+  <!-- ================================================================
+  USER LOGIN MODAL
+================================================================ -->
+  <div class="auth-overlay" id="user-login-overlay">
+    <div class="auth-box">
+      <button class="auth-close" onclick="closeUserLogin()">✕</button>
+      <div class="auth-head">
+        <span class="auth-icon">🍱</span>
+        <h2>WELCOME BACK</h2>
+        <p>Sign in to your account</p>
+      </div>
+      <div class="auth-body">
+        <div class="auth-error" id="login-error"></div>
+        <div class="auth-success" id="login-success"></div>
+        <div class="auth-field">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="auth-btn" id="login-btn" onclick="submitUserLogin()">
+          Login
+        </button>
+        <div class="auth-divider"><span>OR</span></div>
+        <div class="auth-switch">
+          Don't have an account? <a onclick="switchToRegister()">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+  USER REGISTER MODAL
+================================================================ -->
+  <div class="auth-overlay" id="user-register-overlay">
+    <div class="auth-box">
+      <button class="auth-close" onclick="closeUserRegister()">✕</button>
+      <div class="auth-head">
+        <span class="auth-icon">✨</span>
+        <h2>JOIN FRESH PLATE</h2>
+        <p>Create a new account — it's free!</p>
+      </div>
+      <div class="auth-body">
+        <div class="auth-error" id="register-error"></div>
+        <div class="auth-success" id="register-success"></div>
+        <div class="auth-field">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="auth-field">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label>Phone Number (Optional)</label>
+          <input type="tel" id="reg-phone" placeholder="10-digit number" autocomplete="tel">
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="At least 6 characters" autocomplete="new-password">
+        </div>
+        <button class="auth-btn" id="register-btn" onclick="submitRegister()">
+          Create Account
+        </button>
+        <div class="auth-divider"><span>OR</span></div>
+        <div class="auth-switch">
+          Already have an account? <a onclick="switchToLogin()">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+  ADMIN LOGIN MODAL
+================================================================ -->
+  <div class="auth-overlay" id="admin-login-overlay">
+    <div class="auth-box admin-box">
+      <button class="auth-close" onclick="closeAdminLogin()">✕</button>
+      <div class="auth-head">
+        <span class="auth-icon">👑</span>
+        <h2>ADMIN PORTAL</h2>
+        <p>Authorized personnel only</p>
+      </div>
+      <div class="auth-body">
+        <div class="auth-error" id="admin-error"></div>
+        <div class="auth-success" id="admin-success"></div>
+        <div class="auth-field">
+          <label>Admin Email</label>
+          <input type="email" id="admin-email" placeholder="admin@freshplate.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label>Admin Password</label>
+          <input type="password" id="admin-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="auth-btn" id="admin-login-btn" onclick="submitAdminLogin()">
+          Admin Login
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Portal trigger (bottom left corner) -->
+  <button class="admin-portal-link" onclick="openAdminLogin()">⚙ Admin Portal</button>
+
+  <!-- ================================================================
+  AUTH JAVASCRIPT
+================================================================ -->
+  <script>
+    (function () {
+      // ── CONFIG ──
+      // If backend is running, this URL will be used, otherwise demo mode
+      const API_BASE = '/api';
+      
+
+      // ── SESSION MANAGEMENT ──
+      const getSession = () => {
+        try {
+          const s = localStorage.getItem('fp_session');
+          return s ? JSON.parse(s) : null;
+        } catch { return null; }
+      };
+      const setSession = (data) => localStorage.setItem('fp_session', JSON.stringify(data));
+      const clearSession = () => localStorage.removeItem('fp_session');
+
+      // ── UI HELPERS ──
+      const showError = (id, msg) => {
+        const el = document.getElementById(id);
+        el.textContent = msg; el.style.display = 'block';
+        setTimeout(() => el.style.display = 'none', 5000);
+      };
+      const showSuccess = (id, msg) => {
+        const el = document.getElementById(id);
+        el.textContent = msg; el.style.display = 'block';
+        setTimeout(() => el.style.display = 'none', 4000);
+      };
+      const setLoading = (btnId, loading, text) => {
+        const btn = document.getElementById(btnId);
+        btn.disabled = loading;
+        btn.textContent = loading ? '⏳ Please wait...' : text;
+      };
+
+      // ── DROPDOWN TOGGLE ──
+      window.toggleNavDropdown = function () {
+        document.getElementById('nav-dropdown').classList.toggle('open');
+      };
+      window.closeNavDropdown = function () {
+        document.getElementById('nav-dropdown').classList.remove('open');
+      };
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function (e) {
+        const wrap = document.getElementById('nav-dots-wrap');
+        if (wrap && !wrap.contains(e.target)) closeNavDropdown();
+      });
+
+      // Update nav based on session
+      function updateNav() {
+        const session = getSession();
+        // Dropdown auth state
+        const ddAuthBtns = document.getElementById('dd-auth-btns');
+        const ddUserInfo = document.getElementById('dd-user-info');
+        const ddUsername = document.getElementById('dd-username');
+
+        if (session) {
+          if (ddAuthBtns) ddAuthBtns.style.display = 'none';
+          if (ddUserInfo) ddUserInfo.style.display = 'block';
+          if (ddUsername) ddUsername.textContent = (session.role === 'admin' ? '👑 ' : '👤 ') + session.name;
+        } else {
+          if (ddAuthBtns) ddAuthBtns.style.display = 'block';
+          if (ddUserInfo) ddUserInfo.style.display = 'none';
+        }
+      }
+
+      // Update Dashboard modal user panel
+      function updateDashboard() {
+        const session = getSession();
+        let panel = document.getElementById('fp-user-dash-panel');
+        let adminPanel = document.getElementById('admin-panel-section');
+
+        if (!panel) return; // Dashboard not open yet
+
+        if (session) {
+          panel.style.display = 'block';
+          const nameEl = panel.querySelector('.fp-user-name');
+          const emailEl = panel.querySelector('.fp-user-email');
+          if (nameEl) nameEl.textContent = 'Welcome, ' + session.name + '! 👋';
+          if (emailEl) emailEl.textContent = session.email;
+
+          // Admin panel show/hide
+          if (adminPanel) {
+            if (session.role === 'admin') {
+              adminPanel.style.display = 'block';
+              loadAdminUsers();
+            } else {
+              adminPanel.style.display = 'none';
+            }
+          }
+        } else {
+          panel.style.display = 'none';
+          if (adminPanel) adminPanel.style.display = 'none';
+        }
+      }
+
+      // ── MODAL OPEN/CLOSE ──
+      window.openUserLogin = function () {
+        document.getElementById('user-login-overlay').classList.add('open');
+        setTimeout(() => document.getElementById('login-email').focus(), 100);
+      };
+      window.closeUserLogin = function () {
+        document.getElementById('user-login-overlay').classList.remove('open');
+      };
+      window.openUserRegister = function () {
+        document.getElementById('user-register-overlay').classList.add('open');
+        setTimeout(() => document.getElementById('reg-name').focus(), 100);
+      };
+      window.closeUserRegister = function () {
+        document.getElementById('user-register-overlay').classList.remove('open');
+      };
+      window.openAdminLogin = function () {
+        document.getElementById('admin-login-overlay').classList.add('open');
+        setTimeout(() => document.getElementById('admin-email').focus(), 100);
+      };
+      window.closeAdminLogin = function () {
+        document.getElementById('admin-login-overlay').classList.remove('open');
+      };
+
+      window.switchToRegister = function () {
+        closeUserLogin();
+        openUserRegister();
+      };
+      window.switchToLogin = function () {
+        closeUserRegister();
+        openUserLogin();
+      };
+
+      // ── USER LOGIN ──
+      window.submitUserLogin = async function () {
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        if (!email || !password) {
+          return showError('login-error', 'Please enter both email and password');
+        }
+
+        setLoading('login-btn', true, 'Login');
+
+        try {
+          // Real API call
+            const res = await fetch(API_BASE + '/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+              setLoading('login-btn', false, 'Login');
+              return showError('login-error', data.message);
+            }
+
+            setSession({ ...data.user, token: data.token });
+            showSuccess('login-success', data.message);
+            setTimeout(() => { closeUserLogin(); updateNav(); }, 1200);
+        } catch (err) {
+          setLoading('login-btn', false, 'Login');
+          showError('login-error', 'Connection error — please check the server');
+        }
+
+        setLoading('login-btn', false, 'Login');
+      };
+
+      // ── USER REGISTER ──
+      window.submitRegister = async function () {
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const phone = document.getElementById('reg-phone').value.trim();
+        const password = document.getElementById('reg-password').value;
+
+        if (!name || !email || !password) {
+          return showError('register-error', 'Name, email and password are required');
+        }
+        if (password.length < 6) {
+          return showError('register-error', 'Password must be at least 6 characters');
+        }
+
+        setLoading('register-btn', true, 'Create Account');
+
+        try {
+          const res = await fetch(API_BASE + '/auth/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, phone, password })
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+              setLoading('register-btn', false, 'Create Account');
+              return showError('register-error', data.message);
+            }
+
+            setSession({ ...data.user, token: data.token });
+            showSuccess('register-success', data.message);
+            setTimeout(() => { closeUserRegister(); updateNav(); }, 1500);
+        } catch (err) {
+          setLoading('register-btn', false, 'Create Account');
+          showError('register-error', 'Connection error');
+        }
+
+        setLoading('register-btn', false, 'Create Account');
+      };
+
+      // ── ADMIN LOGIN ──
+      window.submitAdminLogin = async function () {
+        const email = document.getElementById('admin-email').value.trim();
+        const password = document.getElementById('admin-password').value;
+
+        if (!email || !password) {
+          return showError('admin-error', 'Please enter email and password');
+        }
+
+        setLoading('admin-login-btn', true, 'Admin Login');
+
+        try {
+          const res = await fetch(API_BASE + '/admin/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+              setLoading('admin-login-btn', false, 'Admin Login');
+              return showError('admin-error', data.message);
+            }
+
+            setSession({ ...data.user, token: data.token });
+            showSuccess('admin-success', data.message);
+            setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 800);
+        } catch (err) {
+          setLoading('admin-login-btn', false, 'Admin Login');
+          showError('admin-error', 'Connection error');
+        }
+
+        setLoading('admin-login-btn', false, 'Admin Login');
+      };
+
+      // ── LOGOUT ──
+      window.logoutUser = function () {
+        clearSession();
+        updateNav();
+        // Close the dashboard modal if it is open
+        const modal = document.querySelector('.modal-overlay.open');
+        if (modal) modal.classList.remove('open');
+      };
+
+      // ── ADMIN: Load Users ──
+      async function loadAdminUsers() {
+        const session = getSession();
+        if (!session || session.role !== 'admin') return;
+
+        const tbody = document.getElementById('admin-users-tbody');
+        if (!tbody) return;
+
+        try {
+            const res = await fetch(API_BASE + '/admin/users', {
+              headers: { Authorization: 'Bearer ' + session.token }
+            });
+            const data = await res.json();
+            renderUsers(data.users || []);
+          } catch { renderUsers([]); }
+      }
+
+      function renderUsers(users) {
+        const tbody = document.getElementById('admin-users-tbody');
+        if (!tbody) return;
+        if (!users.length) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">No users have registered yet</td></tr>';
+          return;
+        }
+        tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>${u.name || '—'}</td>
+        <td>${u.email}</td>
+        <td>${u.phone || '—'}</td>
+        <td><button class="admin-del-btn" onclick="adminDeleteUser('${u._id || u.id}')">Delete</button></td>
+      </tr>
+    `).join('');
+      }
+
+      window.adminDeleteUser = async function (id) {
+        if (!confirm('Are you sure you want to delete this user?')) return;
+        const session = getSession();
+
+        try {
+            await fetch(API_BASE + '/admin/users/' + id, {
+              method: 'DELETE',
+              headers: { Authorization: 'Bearer ' + session.token }
+            });
+          } catch { }
+        loadAdminUsers();
+      };
+
+      // ── PATCH DASHBOARD MODAL ──
+      // Inject user panel after the existing openDash function
+      const _origOpenDash = window.openDash;
+      window.openDash = function () {
+        // Redirect admin directly to the professional dashboard
+        const _s = getSession();
+        if (_s && _s.role === 'admin') {
+          window.location.href = 'admin-dashboard.html';
+          return;
+        }
+
+        if (_origOpenDash) _origOpenDash();
+
+        // Inject user panel if not present
+        setTimeout(() => {
+          const session = getSession();
+          const modalBody = document.querySelector('#dash-overview');
+          if (!modalBody) return;
+
+          // User panel
+          if (!document.getElementById('fp-user-dash-panel')) {
+            const panel = document.createElement('div');
+            panel.id = 'fp-user-dash-panel';
+            panel.className = 'user-dash-panel';
+            panel.style.display = session ? 'block' : 'none';
+            panel.innerHTML = `
+          <h3 class="fp-user-name">Welcome! 👋</h3>
+          <p class="fp-user-email" style="color:rgba(255,255,255,0.4);font-size:13px;margin-top:4px;"></p>
+        `;
+            modalBody.insertBefore(panel, modalBody.firstChild);
+          }
+
+          // Admin panel
+          if (!document.getElementById('admin-panel-section')) {
+            const adminPanel = document.createElement('div');
+            adminPanel.id = 'admin-panel-section';
+            adminPanel.innerHTML = `
+          <h3>👑 Admin Panel — Registered Users</h3>
+          <table class="admin-user-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-tbody">
+              <tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">Loading...</td></tr>
+            </tbody>
+          </table>
+        `;
+            modalBody.insertBefore(adminPanel, modalBody.firstChild);
+          }
+
+          updateDashboard();
+
+          // Show login prompt if user is logged out
+          if (!session) {
+            const loginNote = document.getElementById('fp-login-note');
+            if (!loginNote) {
+              const note = document.createElement('div');
+              note.id = 'fp-login-note';
+              note.style.cssText = 'text-align:center;padding:16px;background:rgba(201,148,42,0.08);border:1px solid rgba(201,148,42,0.2);border-radius:10px;margin-bottom:20px;';
+              note.innerHTML = `
+            <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:12px;">Please log in to access dashboard features</p>
+            <button onclick="closeAllModals();openUserLogin()" style="background:var(--gold);color:var(--black);border:none;padding:10px 24px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;">Login / Register</button>
+          `;
+              modalBody.insertBefore(note, modalBody.firstChild);
+            }
+          }
+        }, 100);
+      };
+
+      window.closeAllModals = function () {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+      };
+
+      // ── KEYBOARD ESC to close auth modals ──
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          closeUserLogin(); closeUserRegister(); closeAdminLogin();
+        }
+      });
+
+      // Enter key support
+      ['login-email', 'login-password'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') submitUserLogin(); });
+      });
+      ['reg-name', 'reg-email', 'reg-phone', 'reg-password'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') submitRegister(); });
+      });
+      ['admin-email', 'admin-password'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') submitAdminLogin(); });
+      });
+
+      // Overlay click to close
+      document.getElementById('user-login-overlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeUserLogin();
+      });
+      document.getElementById('user-register-overlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeUserRegister();
+      });
+      document.getElementById('admin-login-overlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeAdminLogin();
+      });
+
+      // ── INIT ──
+      updateNav();
+
+    })();
+  </script>
+
+  <!-- Vanta.js Background Animation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.VANTA) {
+        // Every Meal. Every Craving. section
+        VANTA.CLOUDS({
+          el: "#menu-vanta-bg",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          backgroundColor: 0xffffff,
+          skyColor: 0xa88faf,
+          cloudColor: 0xdbadde
+        });
+        // Seasonal & Special Meals + Little Extras — shared single animation
+        VANTA.CLOUDS({
+          el: "#seasonal-addons-vanta-bg",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          backgroundColor: 0xffffff,
+          skyColor: 0xa88faf,
+          cloudColor: 0xdbadde
+        });
+      }
+    });
+  </script>
+
+</body>
+
+</html>

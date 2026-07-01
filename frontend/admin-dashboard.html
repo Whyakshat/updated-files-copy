@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Fresh Plate & Co</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --black: #000000;
+  --bg-dark: #0a0a0a;
+  --card-bg: #111111;
+  --border: #222222;
+  --text-main: #ffffff;
+  --text-muted: #888888;
+  --accent: #ffffff;
+  --accent-muted: rgba(255,255,255,0.06);
+  --success: #34d399;
+  --danger: #f87171;
+  --warning: #fbbf24;
+  --info: #60a5fa;
+  --font: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg-dark);color:var(--text-main);min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--black);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100}
+.sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid var(--border)}
+.sidebar-logo h1{font-family:var(--font);font-size:18px;font-weight:700;color:var(--text-main);letter-spacing:1px}
+.sidebar-logo p{font-size:11px;color:var(--text-muted);letter-spacing:1px;margin-top:2px}
+.sidebar-nav{flex:1;padding:20px 0}
+.nav-section{padding:8px 24px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-top:12px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 24px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .2s;text-decoration:none;border-right:2px solid transparent}
+.nav-item:hover{color:var(--text-main);background:var(--accent-muted)}
+.nav-item.active{color:var(--text-main);background:var(--accent-muted);border-right-color:var(--text-main)}
+.nav-item .icon{width:16px;height:16px;stroke-width:2px}
+.sidebar-footer{padding:20px 24px;border-top:1px solid var(--border)}
+.admin-badge{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.admin-avatar{width:32px;height:32px;border-radius:50%;background:var(--card-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.admin-info h4{font-size:13px;font-weight:600;color:var(--text-main)}
+.admin-info p{font-size:11px;color:var(--text-muted)}
+.logout-btn{width:100%;background:transparent;border:1px solid var(--border);color:var(--text-main);padding:8px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.logout-btn:hover{background:var(--card-bg);border-color:var(--text-muted)}
+
+/* ── MAIN CONTENT ── */
+.main{margin-left:240px;min-height:100vh;padding:32px 36px}
+.page-header{margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-end}
+.page-header h2{font-size:24px;font-weight:600;color:var(--text-main);letter-spacing:-0.5px}
+.page-header p{font-size:13px;color:var(--text-muted);margin-top:4px}
+.header-actions{display:flex;gap:10px}
+
+/* ── PANELS (pages) ── */
+.panel{display:none}
+.panel.active{display:block}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:30px}
+.stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:20px;transition:border-color .2s}
+.stat-card:hover{border-color:#444}
+.stat-card .s-label{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:12px}
+.stat-card .s-val{font-size:28px;font-weight:600;color:var(--text-main);line-height:1}
+.stat-card .s-sub{font-size:12px;color:var(--text-muted);margin-top:8px}
+.stat-card .s-change{font-size:12px;margin-top:4px;display:flex;align-items:center;gap:4px}
+.stat-card .s-change.up{color:var(--success)}
+.stat-card .s-change.down{color:var(--danger)}
+
+/* ── GRID LAYOUTS ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px}
+.col-2-1{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:20px}
+
+/* ── CARD BOX ── */
+.box{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:24px}
+.box-title{font-size:14px;font-weight:600;color:var(--text-main);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+
+/* ── PROGRESS BAR ── */
+.prog-row{margin-bottom:14px}
+.prog-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;color:var(--text-muted)}
+.prog-label span:last-child{color:var(--text-main);font-weight:500}
+.prog-bg{background:var(--bg-dark);border-radius:4px;height:6px}
+.prog-fill{height:100%;border-radius:4px;background:var(--text-main)}
+
+/* ── TABLES ── */
+.orders-table, .users-table{width:100%;border-collapse:collapse}
+.orders-table th, .users-table th{text-align:left;font-size:11px;font-weight:500;color:var(--text-muted);padding:12px 14px;border-bottom:1px solid var(--border)}
+.orders-table td, .users-table td{padding:14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-main)}
+.orders-table tr:last-child td, .users-table tr:last-child td{border-bottom:none}
+.orders-table tr:hover td, .users-table tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* ── BADGES ── */
+.badge{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:500;border:1px solid transparent}
+.badge-pending{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.2);color:var(--warning)}
+.badge-confirmed{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.2);color:var(--info)}
+.badge-preparing{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.2);color:var(--warning)}
+.badge-delivered{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.2);color:var(--success)}
+.badge-cancelled{background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.2);color:var(--danger)}
+
+/* ── FORMS & BUTTONS ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.form-group label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text-main);font-size:13px;font-family:var(--font);outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#555}
+.submit-btn, .action-btn{background:var(--text-main);color:var(--black);border:none;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .2s;display:inline-flex;align-items:center;gap:8px}
+.submit-btn:hover, .action-btn:hover{opacity:0.9}
+.outline-btn{background:transparent;color:var(--text-main);border:1px solid var(--border);padding:10px 20px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:8px}
+.outline-btn:hover{background:var(--card-bg)}
+.del-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:6px 12px;border-radius:4px;font-size:12px;cursor:pointer;transition:all .2s}
+.del-btn:hover{background:rgba(248,113,113,0.1);border-color:var(--danger);color:var(--danger)}
+.filter-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.filter-btn:hover{color:var(--text-main);border-color:#555}
+.filter-btn.active{background:var(--text-main);color:var(--black);border-color:var(--text-main)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px 20px;font-size:13px;color:var(--text-main);z-index:9999;display:none;animation:slideUp .3s ease;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── LIVE ACTIVITY FEED ── */
+.activity-list{display:flex;flex-direction:column;gap:16px}
+.activity-item{display:flex;gap:12px;font-size:13px;color:var(--text-muted)}
+.activity-item .time{font-size:11px;color:#555;min-width:45px}
+.activity-item .msg b{color:var(--text-main);font-weight:500}
+.activity-item .dot{width:8px;height:8px;border-radius:50%;background:var(--border);margin-top:4px}
+.activity-item.new .dot{background:var(--success)}
+
+/* ── CHART BARS ── */
+.chart-bars{display:flex;align-items:flex-end;gap:12px;height:140px;padding-top:10px}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.bar{width:100%;max-width:30px;background:var(--border);border-radius:4px 4px 0 0;transition:all .6s ease;min-height:4px;position:relative}
+.bar:hover{background:#555}
+.bar-label{font-size:11px;color:var(--text-muted);text-align:center}
+.bar-val{font-size:11px;color:var(--text-main);opacity:0;transition:opacity .2s;position:absolute;top:-20px;width:100%;text-align:center}
+.bar-wrap:hover .bar-val{opacity:1}
+
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>FPC ADMIN</h1>
+    <p>Admin Workspace</p>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Analytics</div>
+    <a class="nav-item active" onclick="showPanel('overview')">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      <span>Overview</span>
+    </a>
+    <a class="nav-item" onclick="showPanel('orders')">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      <span>Orders</span>
+    </a>
+    <a class="nav-item" onclick="showPanel('menu')">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+      <span>Menu Items</span>
+    </a>
+    <div class="nav-section">Management</div>
+    <a class="nav-item" onclick="showPanel('users')">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      <span>Users</span>
+    </a>
+    <a class="nav-item" onclick="showPanel('allreviews')">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <span>All Reviews</span>
+    </a>
+    <a class="nav-item" onclick="showPanel('urgent')">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <span style="color:var(--danger)">Urgent Issues</span>
+    </a>
+    <a class="nav-item" onclick="showPanel('reports')">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      <span>Reports</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="admin-badge">
+      <div class="admin-avatar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+      <div class="admin-info">
+        <h4 id="admin-name">Admin</h4>
+        <p id="admin-email">Loading...</p>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="adminLogout()">Log out</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- OVERVIEW PANEL -->
+  <div class="panel active" id="panel-overview">
+    <div class="page-header">
+      <h2>DASHBOARD OVERVIEW</h2>
+      <p id="today-date">Today's summary</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="s-label">Today's Orders</div>
+        <div class="s-val" id="stat-today-orders">0</div>
+        <div class="s-change up" id="stat-orders-change">Loading...</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Gross Revenue</div>
+        <div class="s-val" id="stat-today-revenue">₹0</div>
+        <div class="s-change up" id="stat-rev-change">Loading...</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Active Users</div>
+        <div class="s-val" id="stat-users">0</div>
+        <div class="s-change up" id="stat-users-change">Loading...</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Avg Order Value (AOV)</div>
+        <div class="s-val" id="stat-aov">₹0</div>
+        <div class="s-change up" id="stat-aov-change">Target: ₹250</div>
+      </div>
+    </div>
+    
+    <div class="col-2-1">
+      <!-- Weekly Sales Chart -->
+      <div class="box">
+        <div class="box-title">Weekly Sales <span style="color:rgba(255,255,255,0.2);font-size:10px">Last 7 days</span></div>
+        <div class="chart-bars" id="weekly-chart">
+          <!-- JS se fill hoga -->
+        </div>
+      </div>
+
+      <!-- Top Selling Items -->
+      <div class="box">
+        <div class="box-title">Top Selling Items</div>
+        <div id="top-items-list">
+          <!-- JS se fill hoga -->
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <!-- Category Demand -->
+      <div class="box">
+        <div class="box-title">Live Activity Feed</div>
+        <div class="activity-list" id="activity-feed">
+          <div class="activity-item new"><div class="dot"></div><div class="time">Just now</div><div class="msg"><b>Guest</b> placed an order for ₹120</div></div>
+          <div class="activity-item"><div class="dot"></div><div class="time">2m ago</div><div class="msg"><b>Rahul</b> registered a new account</div></div>
+          <div class="activity-item"><div class="dot"></div><div class="time">15m ago</div><div class="msg"><b>Aditi</b> left a 5-star review</div></div>
+          <div class="activity-item"><div class="dot"></div><div class="time">1h ago</div><div class="msg">Order #1042 was delivered</div></div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Recent Orders -->
+      <div class="box">
+        <div class="box-title">Recent Orders <span style="color:rgba(255,255,255,0.2);font-size:10px">Last 5</span></div>
+        <table class="orders-table">
+          <thead><tr><th>Customer</th><th>Item</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="recent-orders-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDERS PANEL -->
+  <div class="panel" id="panel-orders">
+    <div class="page-header">
+      <h2>ORDER MANAGEMENT</h2>
+      <p>All live orders from the website — real time</p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
+      <div class="stat-card">
+        <div class="s-label">Today's Orders</div>
+        <div class="s-val" id="ord-today">0</div>
+        <div class="s-sub">From website</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Gross Revenue</div>
+        <div class="s-val" id="ord-rev">₹0</div>
+        <div class="s-sub">Estimated</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Pending Orders</div>
+        <div class="s-val" id="ord-pending" style="color:#ffa726">0</div>
+        <div class="s-sub">Not yet confirmed</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Total Orders</div>
+        <div class="s-val" id="ord-total">0</div>
+        <div class="s-sub">All time</div>
+      </div>
+    </div>
+
+    <!-- Filter + Refresh Bar -->
+    <div class="box" style="margin-bottom:16px;padding:14px 20px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase">Filter:</span>
+        <div id="order-filter-btns" style="display:flex;gap:6px;flex-wrap:wrap">
+          <button onclick="setOrderFilter('all')"       class="filter-btn active" data-f="all">All</button>
+          <button onclick="setOrderFilter('pending')"   class="filter-btn" data-f="pending">Pending</button>
+          <button onclick="setOrderFilter('confirmed')" class="filter-btn" data-f="confirmed">Confirmed</button>
+          <button onclick="setOrderFilter('preparing')" class="filter-btn" data-f="preparing">Preparing</button>
+          <button onclick="setOrderFilter('delivered')" class="filter-btn" data-f="delivered">Delivered</button>
+          <button onclick="setOrderFilter('cancelled')" class="filter-btn" data-f="cancelled">Cancelled</button>
+        </div>
+        <button onclick="loadLiveOrders()" style="margin-left:auto;class='outline-btn'">Refresh</button>
+        <span id="ord-last-updated" style="font-size:10px;color:rgba(255,255,255,0.2)"></span>
+      </div>
+    </div>
+
+    <!-- Live Orders Table -->
+    <div class="box">
+      <div class="box-title">
+        Live Website Orders
+        <span id="orders-count" style="color:rgba(255,255,255,0.3);font-size:11px"></span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="orders-table" style="min-width:820px">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Customer</th>
+              <th>Item Ordered</th>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="all-orders-body">
+            <tr><td colspan="8" style="text-align:center;color:rgba(255,255,255,0.2);padding:40px">Loading orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU PANEL -->
+  <div class="panel" id="panel-menu">
+    <div class="page-header">
+      <h2>MENU MANAGEMENT</h2>
+      <p>Add, edit or delete items</p>
+    </div>
+
+    <div class="box" style="margin-bottom:24px">
+      <div class="box-title">Add New Item</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Item Name</label>
+          <input type="text" id="menu-name" placeholder="e.g. Paneer Tikka">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="menu-cat">
+            <option>Thali</option>
+            <option>Paratha</option>
+            <option>Combo</option>
+            <option>Add-on</option>
+            <option>Seasonal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Price (₹)</label>
+          <input type="number" id="menu-price" placeholder="e.g. 150">
+        </div>
+        <div class="form-group">
+          <label>Availability</label>
+          <select id="menu-available">
+            <option value="available">Available</option>
+            <option value="unavailable">Unavailable</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <label>Description</label>
+        <textarea id="menu-desc" rows="2" placeholder="Item description..." style="resize:none"></textarea>
+      </div>
+      <button class="submit-btn" onclick="addMenuItem()">+ Add Menu Item</button>
+    </div>
+
+    <div class="box">
+      <div class="box-title">Current Menu Items <span id="menu-count" style="color:rgba(255,255,255,0.3);font-size:11px"></span></div>
+      <table class="orders-table">
+        <thead><tr><th>Item Name</th><th>Category</th><th>Price</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="menu-items-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- USERS PANEL -->
+  <div class="panel" id="panel-users">
+    <div class="page-header">
+      <h2>USER MANAGEMENT</h2>
+      <p>View and manage registered users</p>
+    </div>
+    <div class="box">
+      <div class="box-title">Registered Users <span id="users-count" style="color:rgba(255,255,255,0.3);font-size:11px"></span>
+        <button onclick="loadUsers()" style="class='outline-btn' style='margin-left:auto'">Refresh</button>
+      </div>
+      <table class="users-table">
+        <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Joined</th><th>Action</th></tr></thead>
+        <tbody id="users-body">
+          <tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.2);padding:30px">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ALL REVIEWS PANEL -->
+  <div class="panel" id="panel-allreviews">
+    <div class="page-header">
+      <h2>ALL REVIEWS</h2>
+      <p>View all customer feedback and sentiment analysis</p>
+    </div>
+    <div class="box">
+      <div class="box-title">All Customer Reviews
+        <button onclick="loadAllReviews()" style="class='outline-btn' style='margin-left:auto'">Refresh</button>
+      </div>
+      <table class="users-table">
+        <thead><tr><th>Customer</th><th>Email</th><th>Review Text</th><th>Sentiment</th><th>Date</th></tr></thead>
+        <tbody id="allreviews-body">
+          <tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.2);padding:30px">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- URGENT ATTENTION PANEL -->
+  <div class="panel" id="panel-urgent">
+    <div class="page-header">
+      <h2 style="color:var(--red);">URGENT ATTENTION</h2>
+      <p>AI flagged reviews requiring immediate action (Angry / Food Quality Issues)</p>
+    </div>
+    <div class="box">
+      <div class="box-title">Flagged Reviews
+        <button onclick="loadUrgentReviews()" style="class='outline-btn' style='margin-left:auto'">Refresh</button>
+      </div>
+      <table class="users-table">
+        <thead><tr><th>Customer</th><th>Email</th><th>Review Text</th><th>Sentiment</th><th>Date</th></tr></thead>
+        <tbody id="urgent-body">
+          <tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.2);padding:30px">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- REPORTS PANEL -->
+  <div class="panel" id="panel-reports">
+    <div class="page-header">
+      <h2>SALES REPORTS</h2>
+      <p>Business performance and analytics</p>
+    </div>
+
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card">
+        <div class="s-label">Total Revenue</div>
+        <div class="s-val" id="rep-total-rev">₹0</div>
+        <div class="s-sub">All time earnings</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Total Orders</div>
+        <div class="s-val" id="rep-total-orders">0</div>
+        <div class="s-sub">All time orders</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Avg Order Value</div>
+        <div class="s-val" id="rep-avg">₹0</div>
+        <div class="s-sub">Per order average</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="box">
+        <div class="box-title">Item-wise Sales</div>
+        <div id="item-sales-report"></div>
+      </div>
+      <div class="box">
+        <div class="box-title">Category-wise Revenue</div>
+        <div id="cat-rev-report"></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="box-title" style="justify-content:space-between">
+        All Orders Report
+        <button onclick="exportCSV()" class='outline-btn'>Export CSV</button>
+      </div>
+      <table class="orders-table">
+        <thead><tr><th>Date</th><th>Customer</th><th>Item</th><th>Category</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody id="report-orders-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+
+// ── Auth Check ──
+function getSession(){
+  try{ return JSON.parse(localStorage.getItem('fp_session')); }catch{ return null; }
+}
+
+window.onload = function(){
+  const s = getSession();
+  if(!s || s.role !== 'admin'){
+    window.location.href = 'index.html';
+    return;
+  }
+  document.getElementById('admin-name').textContent = s.name || 'Admin';
+  document.getElementById('admin-email').textContent = s.email || '';
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('hi-IN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  loadAllData();
+};
+
+function adminLogout(){
+  localStorage.removeItem('fp_session');
+  window.location.href = 'index.html';
+}
+
+// ── Panel Switch ──
+function showPanel(name){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  if(name === 'users') loadUsers();
+  if(name === 'reports') loadReports();
+  if(name === 'orders') loadLiveOrders();
+  if(name === 'menu') renderMenu();
+  if(name === 'urgent') loadUrgentReviews();
+  if(name === 'allreviews') loadAllReviews();
+}
+
+// ── LOCAL DATA STORE ──
+function getOrders(){ return JSON.parse(localStorage.getItem('fp_orders')||'[]'); }
+function saveOrders(o){ localStorage.setItem('fp_orders', JSON.stringify(o)); }
+function getMenuItems(){ 
+  const def = [
+    {id:1, name:'Dal Makhani Thali', cat:'Thali', price:120, status:'available', desc:'Ghar jaisi dal makhani'},
+    {id:2, name:'Paneer Butter Masala Thali', cat:'Thali', price:140, status:'available', desc:'Rich creamy paneer'},
+    {id:3, name:'Aloo Paratha', cat:'Paratha', price:60, status:'available', desc:'Crispy aloo paratha'},
+    {id:4, name:'Gobhi Paratha', cat:'Paratha', price:60, status:'available', desc:'Fresh gobhi stuffed'},
+    {id:5, name:'Rajma Chawal', cat:'Thali', price:100, status:'available', desc:'Classic Punjabi combo'},
+    {id:6, name:'Mix Veg Thali', cat:'Thali', price:110, status:'available', desc:'7 sabziyon ka mix'},
+  ];
+  return JSON.parse(localStorage.getItem('fp_menu') || JSON.stringify(def)); 
+}
+function saveMenu(m){ localStorage.setItem('fp_menu', JSON.stringify(m)); }
+
+// ── LOAD ALL DATA ──
+function loadAllData(){
+  renderOverview();
+  loadUsers();
+  loadOrderStats(); // load live order count for the overview card
+  loadLiveActivityFeed();
+}
+
+async function loadLiveActivityFeed() {
+  const s = getSession();
+  const feedEl = document.getElementById('activity-feed');
+  if (!feedEl) return;
+  
+  feedEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:10px">Loading activity...</div>';
+  
+  try {
+    const opts = { headers: { 'Authorization': 'Bearer ' + s?.token } };
+    
+    // Fetch recent data concurrently
+    const [ordRes, usrRes, revRes] = await Promise.all([
+      fetch(API+'/admin/orders?limit=15', opts).catch(()=>null),
+      fetch(API+'/admin/users', opts).catch(()=>null),
+      fetch(API+'/admin/reviews?limit=15', opts).catch(()=>null)
+    ]);
+    
+    let activities = [];
+    
+    if (ordRes && ordRes.ok) {
+      const data = await ordRes.json();
+      const orders = data.orders || [];
+      orders.forEach(o => {
+        if(o.createdAt) activities.push({
+          type: 'order',
+          date: new Date(o.createdAt),
+          html: `<b>${o.customerName || 'Guest'}</b> placed an order for ₹${o.price || 0}`
+        });
+      });
+    }
+    
+    if (usrRes && usrRes.ok) {
+      const data = await usrRes.json();
+      const users = data.users || [];
+      users.forEach(u => {
+        if(u.createdAt) activities.push({
+          type: 'user',
+          date: new Date(u.createdAt),
+          html: `<b>${u.name || 'A new user'}</b> registered an account`
+        });
+      });
+    }
+    
+    if (revRes && revRes.ok) {
+      const data = await revRes.json();
+      const reviews = data.reviews || [];
+      reviews.forEach(r => {
+        if(r.createdAt) activities.push({
+          type: 'review',
+          date: new Date(r.createdAt),
+          html: `<b>${r.customerName || 'A customer'}</b> left a review: "${(r.text||'').substring(0, 30)}..."`
+        });
+      });
+    }
+    
+    activities.sort((a,b) => b.date - a.date);
+    const top5 = activities.slice(0, 5);
+    
+    if (top5.length === 0) {
+      feedEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:10px">No recent activity</div>';
+      return;
+    }
+    
+    const now = new Date();
+    feedEl.innerHTML = top5.map((act, i) => {
+      const diffMs = now - act.date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHrs = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHrs / 24);
+      
+      let timeStr = 'Just now';
+      if (diffMins > 0 && diffMins < 60) timeStr = diffMins + 'm ago';
+      else if (diffHrs > 0 && diffHrs < 24) timeStr = diffHrs + 'h ago';
+      else if (diffDays > 0) timeStr = diffDays + 'd ago';
+      
+      return `<div class="activity-item ${i === 0 ? 'new' : ''}">
+        <div class="dot"></div>
+        <div class="time" style="min-width:45px">${timeStr}</div>
+        <div class="msg">${act.html}</div>
+      </div>`;
+    }).join('');
+    
+  } catch (err) {
+    feedEl.innerHTML = '<div style="color:var(--danger);font-size:12px;padding:10px">Failed to load activity</div>';
+  }
+}
+
+// ── OVERVIEW ──
+function renderOverview(){
+  try {
+    const orders = getOrders() || [];
+    const today = new Date().toDateString();
+    const todayOrders = Array.isArray(orders) ? orders.filter(o => new Date(o.date).toDateString() === today) : [];
+    const todayRev = todayOrders.reduce((s,o) => s + (parseInt(o.amount)||0), 0);
+    const totalOrders = Array.isArray(orders) ? orders.length : 0;
+
+    const elTodayOrders = document.getElementById('stat-today-orders');
+    if(elTodayOrders) elTodayOrders.textContent = todayOrders.length;
+    
+    const elTodayRev = document.getElementById('stat-today-revenue');
+    if(elTodayRev) elTodayRev.textContent = '₹'+todayRev;
+    
+    const elOrdersChange = document.getElementById('stat-orders-change');
+    if(elOrdersChange) elOrdersChange.textContent = totalOrders + ' total orders';
+    
+    const aov = totalOrders ? Math.round(todayRev/todayOrders.length) : 0;
+    const elAov = document.getElementById('stat-aov');
+    if(elAov) elAov.textContent = '₹' + (aov || 0);
+    
+    const elRevChange = document.getElementById('stat-rev-change');
+    if(elRevChange) elRevChange.textContent = '+12% vs yesterday';
+
+    const targetVal = localStorage.getItem('fp_aov_target') || '250';
+    const elAovChange = document.getElementById('stat-aov-change');
+    if(elAovChange) {
+      elAovChange.innerHTML = `Target: ₹${targetVal} <a href="#" onclick="setAovTarget();return false;" style="color:var(--gold);text-decoration:none;margin-left:5px">Edit</a>`;
+    }
+
+    // Item frequency
+    const freq = {};
+    if (Array.isArray(orders)) {
+      orders.forEach(o => { freq[o.item] = (freq[o.item]||0)+1; });
+    }
+    const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+
+  // Weekly chart
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const weekData = Array(7).fill(0);
+  const now = new Date();
+  orders.forEach(o => {
+    const d = new Date(o.date);
+    const diff = Math.floor((now - d) / 86400000);
+    if(diff < 7) weekData[6-diff] += parseInt(o.amount)||0;
+  });
+  const maxVal = Math.max(...weekData, 100);
+  const chartEl = document.getElementById('weekly-chart');
+  const last7 = [];
+  for(let i=6;i>=0;i--){ 
+    const d = new Date(); d.setDate(d.getDate()-i);
+    last7.push(days[d.getDay()]);
+  }
+  chartEl.innerHTML = weekData.map((v,i) => `
+    <div class="bar-wrap">
+      <div class="bar-val">₹${v}</div>
+      <div class="bar" style="height:${Math.max(4,(v/maxVal)*100)}px"></div>
+      <div class="bar-label">${last7[i]}</div>
+    </div>
+  `).join('');
+
+  // Top items
+  const topList = document.getElementById('top-items-list');
+  if(!top.length){ topList.innerHTML = '<p style="color:rgba(255,255,255,0.2);font-size:13px;padding:10px 0">No orders yet</p>'; }
+  else {
+    const menu = getMenuItems();
+    topList.innerHTML = top.slice(0,5).map((item,i) => {
+      const rev = orders.filter(o=>o.item===item[0]).reduce((s,o)=>s+(parseInt(o.amount)||0),0);
+      return `<div class="top-item">
+        <div class="rank">${i+1}</div>
+        <div class="item-info">
+          <div class="item-name">${item[0]}</div>
+          <div class="item-cat">${orders.find(o=>o.item===item[0])?.cat||'—'}</div>
+        </div>
+        <div class="item-sales">
+          <div class="orders">${item[1]}</div>
+          <div class="revenue">₹${rev}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Category demand
+  const catFreq = {};
+  orders.forEach(o => { catFreq[o.cat||'Other'] = (catFreq[o.cat||'Other']||0)+1; });
+  const catTotal = Object.values(catFreq).reduce((s,v)=>s+v,0)||1;
+  const catEl = document.getElementById('category-demand');
+  catEl.innerHTML = Object.entries(catFreq).sort((a,b)=>b[1]-a[1]).map(([cat,cnt]) => `
+    <div class="prog-row">
+      <div class="prog-label"><span>${cat}</span><span>${cnt} orders (${Math.round(cnt/catTotal*100)}%)</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:${cnt/catTotal*100}%"></div></div>
+    </div>
+  `).join('') || '<p style="color:rgba(255,255,255,0.2);font-size:13px">No data available</p>';
+
+  // Recent orders
+  const tbody = document.getElementById('recent-orders-body');
+  const recent = [...orders].reverse().slice(0,5);
+  tbody.innerHTML = recent.length ? recent.map(o => `
+    <tr>
+      <td>${o.customer}</td>
+      <td>${o.item}</td>
+      <td>₹${o.amount}</td>
+      <td><span class="badge badge-${o.status}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
+    </tr>
+  `).join('') : '<tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.2);padding:20px">No orders found</td></tr>';
+} catch(e) { console.error('Error rendering overview:', e); }
+}
+
+function setAovTarget() {
+  const current = localStorage.getItem('fp_aov_target') || '250';
+  const val = prompt('Set AOV Target (in ₹):', current);
+  if (val && !isNaN(val)) {
+    localStorage.setItem('fp_aov_target', val);
+    renderOverview();
+  }
+}
+
+// ── ADD ORDER ──
+function addOrder(){
+  const customer = document.getElementById('order-customer').value.trim();
+  const phone = document.getElementById('order-phone').value.trim();
+  const item = document.getElementById('order-item').value;
+  const amount = document.getElementById('order-amount').value;
+  const address = document.getElementById('order-address').value.trim();
+  const status = document.getElementById('order-status').value;
+
+  if(!customer || !item || !amount){ showToast('Customer, item and amount are required'); return; }
+
+  const menu = getMenuItems();
+  const menuItem = menu.find(m => m.name === item);
+  const orders = getOrders();
+  orders.push({
+    id: Date.now(),
+    customer, phone, item,
+    cat: menuItem?.cat || 'Other',
+    amount: parseInt(amount),
+    address, status,
+    date: new Date().toISOString()
+  });
+  saveOrders(orders);
+
+  // Clear form
+  ['order-customer','order-phone','order-amount','order-address'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('order-item').value='';
+  document.getElementById('order-status').value='pending';
+
+  showToast('Order added successfully!');
+  renderOrders();
+  renderOverview();
+}
+
+// ── RENDER ORDERS ──
+function renderOrders(){
+  const orders = getOrders();
+  document.getElementById('orders-count').textContent = orders.length + ' orders';
+  const tbody = document.getElementById('all-orders-body');
+  tbody.innerHTML = orders.length ? [...orders].reverse().map((o,i) => `
+    <tr>
+      <td style="color:rgba(255,255,255,0.3)">#${orders.length-i}</td>
+      <td><b>${o.customer}</b><br><span style="font-size:11px;color:rgba(255,255,255,0.3)">${o.phone||'—'}</span></td>
+      <td>${o.item}</td>
+      <td>₹${o.amount}</td>
+      <td style="font-size:12px">${o.address||'—'}</td>
+      <td>
+        <select onchange="updateOrderStatus(${o.id}, this.value)" style="background:#1a1206;border:1px solid rgba(255,255,255,0.1);color:white;padding:4px 8px;border-radius:4px;font-size:12px">
+          <option ${o.status==='pending'?'selected':''} value="pending">Pending</option>
+          <option ${o.status==='delivered'?'selected':''} value="delivered">Delivered</option>
+          <option ${o.status==='cancelled'?'selected':''} value="cancelled">Cancelled</option>
+        </select>
+      </td>
+      <td style="font-size:11px;color:rgba(255,255,255,0.35)">${new Date(o.date).toLocaleDateString('hi-IN')}</td>
+      <td><button class="del-btn" onclick="deleteOrder(${o.id})">Delete</button></td>
+    </tr>
+  `).join('') : '<tr><td colspan="8" style="text-align:center;color:rgba(255,255,255,0.2);padding:30px">No orders yet</td></tr>';
+}
+
+function updateOrderStatus(id, status){
+  const orders = getOrders();
+  const o = orders.find(o => o.id === id);
+  if(o){ o.status = status; saveOrders(orders); showToast('Status updated successfully'); }
+}
+
+function deleteOrder(id){
+  if(!confirm('Are you sure you want to delete this order?')) return;
+  saveOrders(getOrders().filter(o => o.id !== id));
+  renderOrders(); renderOverview();
+  showToast('Order deleted');
+}
+
+// ── MENU ITEMS ──
+function addMenuItem(){
+  const name = document.getElementById('menu-name').value.trim();
+  const cat = document.getElementById('menu-cat').value;
+  const price = document.getElementById('menu-price').value;
+  const status = document.getElementById('menu-available').value;
+  const desc = document.getElementById('menu-desc').value.trim();
+
+  if(!name || !price){ showToast('Name and price are required'); return; }
+
+  const menu = getMenuItems();
+  menu.push({ id: Date.now(), name, cat, price: parseInt(price), status, desc });
+  saveMenu(menu);
+
+  ['menu-name','menu-price','menu-desc'].forEach(id => document.getElementById(id).value='');
+  showToast('Menu item added successfully!');
+  renderMenu();
+}
+
+function renderMenu(){
+  const menu = getMenuItems();
+  document.getElementById('menu-count').textContent = menu.length + ' items';
+  const tbody = document.getElementById('menu-items-body');
+  tbody.innerHTML = menu.map(m => `
+    <tr>
+      <td><b>${m.name}</b><br><span style="font-size:11px;color:rgba(255,255,255,0.3)">${m.desc||''}</span></td>
+      <td>${m.cat}</td>
+      <td>₹${m.price}</td>
+      <td><span class="status-badge ${m.status==='available'?'delivered':'cancelled'}">${m.status}</span></td>
+      <td>
+        <button class="del-btn" onclick="deleteMenuItem(${m.id})">Delete</button>
+        <button onclick="toggleMenu(${m.id})" style="background:rgba(255,167,195,0.08);border:1px solid rgba(255,167,195,0.2);color:var(--gold);padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;margin-left:6px">Toggle</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function deleteMenuItem(id){
+  if(!confirm('Are you sure you want to delete this item?')) return;
+  saveMenu(getMenuItems().filter(m => m.id !== id));
+  renderMenu(); showToast('Item deleted');
+}
+
+function toggleMenu(id){
+  const menu = getMenuItems();
+  const m = menu.find(m => m.id === id);
+  if(m){ m.status = m.status === 'available' ? 'unavailable' : 'available'; saveMenu(menu); renderMenu(); showToast('Item status updated'); }
+}
+
+// ── USERS ──
+async function loadUsers(){
+  const s = getSession();
+  const tbody = document.getElementById('users-body');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);padding:30px">Loading users...</td></tr>';
+  try{
+    const res = await fetch(API+'/admin/users', {
+      headers:{'Authorization':'Bearer '+s?.token},
+      signal: AbortSignal.timeout(5000)
+    });
+    if(res.status === 401 || res.status === 403) {
+      localStorage.removeItem('fp_session');
+      window.location.href = 'index.html';
+      return;
+    }
+    if(!res.ok) throw new Error('Server error: ' + res.status);
+    const data = await res.json();
+    const users = data.users || [];
+    renderUsers(users);
+    document.getElementById('stat-users').textContent = users.length;
+    document.getElementById('stat-users-change').textContent = '↑ ' + users.length + ' registered';
+  } catch(err) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px"><div style="color:rgba(255,100,100,0.7);font-size:13px">Could not connect to backend server</div></td></tr>';
+  }
+}
+
+function renderUsers(users){
+  const tbody = document.getElementById('users-body');
+  if(document.getElementById('users-count')) document.getElementById('users-count').textContent = users.length + ' users';
+  tbody.innerHTML = users.length ? users.map((u,i) => `
+    <tr>
+      <td style="color:rgba(255,255,255,0.3)">${i+1}</td>
+      <td><b>${u.name||'—'}</b></td>
+      <td>${u.email}</td>
+      <td>${u.phone||'—'}</td>
+      <td>
+        <span style="padding:4px 8px; border-radius:100px; font-size:10px; font-weight:bold; background:${u.isActive===false ? 'rgba(239,83,80,0.1)' : 'rgba(76,175,80,0.1)'}; color:${u.isActive===false ? '#ef5350' : '#81c784'}">
+          ${u.isActive===false ? 'Blocked' : 'Active'}
+        </span>
+      </td>
+      <td style="font-size:11px;color:rgba(255,255,255,0.35)">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('hi-IN') : '—'}</td>
+      <td>
+        <button class="del-btn" style="border-color:${u.isActive===false ? '#81c784' : '#ef5350'}; color:${u.isActive===false ? '#81c784' : '#ef5350'}; margin-right:5px;" onclick="toggleUserStatus('${u._id||u.id}', ${u.isActive===false ? true : false})">${u.isActive===false ? 'Unblock' : 'Block'}</button>
+        <button class="del-btn" onclick="deleteUser('${u._id||u.id}')">Delete</button>
+      </td>
+    </tr>
+  `).join('') : '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.2);padding:30px">No users registered yet</td></tr>';
+}
+
+async function toggleUserStatus(id, isActive){
+  if(!confirm(`Are you sure you want to ${isActive ? 'unblock' : 'block'} this user?`)) return;
+  const s = getSession();
+  try{
+    const res = await fetch(API+'/admin/users/'+id, { 
+      method:'PATCH', 
+      headers:{'Authorization':'Bearer '+s?.token, 'Content-Type':'application/json'},
+      body: JSON.stringify({ isActive })
+    });
+    if(!res.ok) throw new Error('Failed');
+  } catch(err) {
+    showToast('Could not update user status');
+    return;
+  }
+  loadUsers(); showToast(`User ${isActive ? 'unblocked' : 'blocked'} successfully`);
+}
+
+async function loadUrgentReviews(){
+  const s = getSession();
+  const tbody = document.getElementById('urgent-body');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:30px">Loading flagged reviews...</td></tr>';
+  try{
+    const res = await fetch(API+'/admin/reviews?sentiment=ANGRY,FOOD_QUALITY', {
+      headers:{'Authorization':'Bearer '+s?.token}
+    });
+    if(!res.ok) throw new Error('Server error: ' + res.status);
+    const data = await res.json();
+    const reviews = data.reviews || [];
+    tbody.innerHTML = reviews.length ? reviews.map(r => `
+      <tr>
+        <td><b>${r.customerName}</b></td>
+        <td>${r.customerEmail || '—'}</td>
+        <td style="max-width:300px; white-space:normal; line-height:1.4;">${r.text}</td>
+        <td>
+          <span style="padding:4px 8px; border-radius:100px; font-size:10px; font-weight:bold; background:rgba(239,83,80,0.1); color:#ef5350">
+            ${r.sentiment}
+          </span>
+        </td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.35)">${new Date(r.createdAt).toLocaleDateString('hi-IN')}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.2);padding:30px">No urgent reviews found ✅</td></tr>';
+  } catch(err) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px"><div style="color:rgba(255,100,100,0.7);font-size:13px">Could not fetch reviews</div></td></tr>';
+  }
+}
+
+async function loadAllReviews(){
+  const s = getSession();
+  const tbody = document.getElementById('allreviews-body');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:30px">Loading reviews...</td></tr>';
+  try{
+    const res = await fetch(API+'/admin/reviews', {
+      headers:{'Authorization':'Bearer '+s?.token}
+    });
+    if(!res.ok) throw new Error('Server error: ' + res.status);
+    const data = await res.json();
+    const reviews = data.reviews || [];
+    tbody.innerHTML = reviews.length ? reviews.map(r => `
+      <tr>
+        <td><b>${r.customerName}</b></td>
+        <td>${r.customerEmail || '—'}</td>
+        <td style="max-width:300px; white-space:normal; line-height:1.4;">${r.text}</td>
+        <td>
+          <span style="padding:4px 8px; border-radius:100px; font-size:10px; font-weight:bold; 
+            background:${r.sentiment==='HAPPY'?'rgba(76,175,80,0.1)': r.sentiment==='NEUTRAL'?'rgba(255,255,255,0.1)' : 'rgba(239,83,80,0.1)'}; 
+            color:${r.sentiment==='HAPPY'?'#81c784': r.sentiment==='NEUTRAL'?'#ccc' : '#ef5350'}">
+            ${r.sentiment}
+          </span>
+        </td>
+        <td style="font-size:11px;color:rgba(255,255,255,0.35)">${new Date(r.createdAt).toLocaleDateString('hi-IN')}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.2);padding:30px">No reviews found</td></tr>';
+  } catch(err) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px"><div style="color:rgba(255,100,100,0.7);font-size:13px">Could not fetch reviews</div></td></tr>';
+  }
+}
+
+
+async function deleteUser(id){
+  if(!confirm('Are you sure you want to delete this user?')) return;
+  const s = getSession();
+  try{
+    await fetch(API+'/admin/users/'+id, { method:'DELETE', headers:{'Authorization':'Bearer '+s?.token} });
+  } catch(err) {
+    showToast('Could not connect to backend server');
+    return;
+  }
+  loadUsers(); showToast('User deleted successfully');
+}
+
+// ── REPORTS ──
+function loadReports(){
+  const orders = getOrders();
+  const totalRev = orders.reduce((s,o) => s+(parseInt(o.amount)||0), 0);
+  const totalOrders = orders.length;
+  const avg = totalOrders ? Math.round(totalRev/totalOrders) : 0;
+
+  document.getElementById('rep-total-rev').textContent = '₹'+totalRev;
+  document.getElementById('rep-total-orders').textContent = totalOrders;
+  document.getElementById('rep-avg').textContent = '₹'+avg;
+
+  // Item sales
+  const freq = {}; const rev = {};
+  orders.forEach(o => { freq[o.item]=(freq[o.item]||0)+1; rev[o.item]=(rev[o.item]||0)+(parseInt(o.amount)||0); });
+  const maxFreq = Math.max(...Object.values(freq),1);
+  document.getElementById('item-sales-report').innerHTML = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(([item,cnt]) => `
+    <div class="prog-row">
+      <div class="prog-label"><span>${item}</span><span>${cnt} orders — ₹${rev[item]}</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:${cnt/maxFreq*100}%"></div></div>
+    </div>
+  `).join('') || '<p style="color:rgba(255,255,255,0.2);font-size:13px">No orders yet</p>';
+
+  // Category revenue
+  const catRev = {};
+  orders.forEach(o => { catRev[o.cat||'Other']=(catRev[o.cat||'Other']||0)+(parseInt(o.amount)||0); });
+  const maxCatRev = Math.max(...Object.values(catRev),1);
+  document.getElementById('cat-rev-report').innerHTML = Object.entries(catRev).sort((a,b)=>b[1]-a[1]).map(([cat,r]) => `
+    <div class="prog-row">
+      <div class="prog-label"><span>${cat}</span><span>₹${r}</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:${r/maxCatRev*100}%"></div></div>
+    </div>
+  `).join('') || '<p style="color:rgba(255,255,255,0.2);font-size:13px">No data available</p>';
+
+  // Full report table
+  document.getElementById('report-orders-body').innerHTML = [...orders].reverse().map(o => `
+    <tr>
+      <td style="font-size:11px">${new Date(o.date).toLocaleDateString('hi-IN')}</td>
+      <td>${o.customer}</td>
+      <td>${o.item}</td>
+      <td>${o.cat||'—'}</td>
+      <td>₹${o.amount}</td>
+      <td><span class="badge badge-${o.status}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
+    </tr>
+  `).join('') || '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.2);padding:20px">No orders found</td></tr>';
+}
+
+// ── EXPORT CSV ──
+function exportCSV(){
+  const orders = getOrders();
+  if(!orders.length){ showToast('No orders available to export'); return; }
+  const header = 'Date,Customer,Phone,Item,Category,Amount,Address,Status\n';
+  const rows = orders.map(o => `${new Date(o.date).toLocaleDateString()},${o.customer},${o.phone||''},${o.item},${o.cat||''},${o.amount},${o.address||''},${o.status}`).join('\n');
+  const blob = new Blob([header+rows], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'freshplate-orders-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  showToast('CSV downloaded successfully!');
+}
+
+// ══════════════════════════════════════════════════
+// ── LIVE ORDERS (from Backend) ──
+// ══════════════════════════════════════════════════
+
+let currentOrderFilter = 'all';
+let liveOrdersAutoRefresh = null;
+
+// Load order stats for overview panel
+async function loadOrderStats(){
+  const s = getSession();
+  try{
+    const res = await fetch(API+'/admin/order-stats', {
+      headers:{'Authorization':'Bearer '+s?.token},
+      signal: AbortSignal.timeout(4000)
+    });
+    if(res.status === 401 || res.status === 403) {
+      localStorage.removeItem('fp_session');
+      window.location.href = 'index.html';
+      return;
+    }
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data.success){
+      const st = data.stats;
+      document.getElementById('stat-today-orders').textContent = st.todayCount;
+      document.getElementById('stat-today-revenue').textContent = '\u20b9'+st.todayRevenue;
+      document.getElementById('stat-orders-change').textContent = st.total + ' total orders';
+    }
+  } catch(e){ /* silent */ }
+}
+
+// Load all live orders with optional filter
+async function loadLiveOrders(){
+  const s = getSession();
+  const tbody = document.getElementById('all-orders-body');
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:rgba(255,255,255,0.3);padding:40px">Loading orders...</td></tr>';
+
+  try{
+    let url = API+'/admin/orders?limit=200';
+    if(currentOrderFilter !== 'all') url += '&status='+currentOrderFilter;
+
+    const res = await fetch(url, {
+      headers:{'Authorization':'Bearer '+s?.token},
+      signal: AbortSignal.timeout(6000)
+    });
+    if(res.status === 401 || res.status === 403) {
+      localStorage.removeItem('fp_session');
+      window.location.href = 'index.html';
+      return;
+    }
+    if(!res.ok) throw new Error('Server error');
+    const data = await res.json();
+    const orders = data.orders || [];
+
+    // Update stat cards
+    document.getElementById('ord-total').textContent = orders.length;
+    document.getElementById('orders-count').textContent = orders.length + ' orders';
+
+    // Calculate today stats
+    const today = new Date().toDateString();
+    const todayOrd = orders.filter(o => new Date(o.createdAt).toDateString() === today);
+    const todayRev = todayOrd.reduce((s,o) => s+(o.price||0), 0);
+    const pendingCnt = orders.filter(o => o.status === 'pending').length;
+    document.getElementById('ord-today').textContent = todayOrd.length;
+    document.getElementById('ord-rev').textContent = '\u20b9'+todayRev;
+    document.getElementById('ord-pending').textContent = pendingCnt;
+
+    // Update last refreshed time
+    const now = new Date();
+    document.getElementById('ord-last-updated').textContent =
+      'Updated: '+now.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+
+    renderLiveOrders(orders);
+
+    // Auto-refresh every 30 seconds
+    if(!liveOrdersAutoRefresh){
+      liveOrdersAutoRefresh = setInterval(loadLiveOrders, 30000);
+    }
+
+  } catch(err){
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px">
+      <div style="color:rgba(255,100,100,0.7);font-size:13px">Could not connect to backend</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:12px;margin-top:8px">Is the server running? localhost:3001</div>
+    </td></tr>`;
+  }
+}
+
+// Render orders into table
+function renderLiveOrders(orders){
+  const tbody = document.getElementById('all-orders-body');
+  if(!orders.length){
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:rgba(255,255,255,0.2);padding:40px">
+      No orders found ${currentOrderFilter !== 'all' ? '(for this filter)' : 'yet'}
+    </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = orders.map((o,i) => {
+    const time = new Date(o.createdAt);
+    const timeStr = time.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+    const dateStr = time.toLocaleDateString('en-IN', {day:'2-digit',month:'short'});
+    const isToday = time.toDateString() === new Date().toDateString();
+
+    const customerInfo = o.customerName && o.customerName !== 'Guest'
+      ? `<b>${o.customerName}</b><br><span style="font-size:11px;color:rgba(255,255,255,0.3)">${o.customerEmail||o.customerPhone||'Guest'}</span>`
+      : `<span style="color:rgba(255,255,255,0.3)">Guest</span>`;
+
+    const whatsappPhone = o.customerPhone
+      ? `<a href="https://wa.me/91${o.customerPhone}?text=Hi+${encodeURIComponent(o.customerName||'')}!+Your+order+for+${encodeURIComponent(o.item)}+has+been+confirmed+\u2705" target="_blank" style="background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.25);color:#4caf50;padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;text-decoration:none;white-space:nowrap">WhatsApp</a>`
+      : '';
+
+    return `<tr>
+      <td style="color:rgba(255,255,255,0.3);font-size:12px">${orders.length - i}</td>
+      <td>${customerInfo}</td>
+      <td><b style="color:var(--white)">${o.item}</b></td>
+      <td><span style="font-size:11px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);padding:3px 8px;border-radius:4px">${o.category||'Other'}</span></td>
+      <td style="font-family:var(--display);font-size:18px;color:var(--gold)">${o.price ? '\u20b9'+o.price : '\u2014'}</td>
+      <td>
+        <select onchange="updateLiveOrderStatus('${o._id}', this.value)" style="background:#1a1206;border:1px solid rgba(255,255,255,0.1);color:white;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer">
+          <option value="pending"   ${o.status==='pending'?'selected':''}>Pending</option>
+          <option value="confirmed" ${o.status==='confirmed'?'selected':''}>Confirmed</option>
+          <option value="preparing" ${o.status==='preparing'?'selected':''}>Preparing</option>
+          <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
+          <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Cancelled</option>
+        </select>
+      </td>
+      <td style="font-size:11px;color:rgba(255,255,255,0.35)">
+        ${isToday ? '<span style="color:#81c784;font-weight:600">Today</span> ' : dateStr+' '}
+        <br>${timeStr}
+      </td>
+      <td style="display:flex;gap:6px;align-items:center;padding-top:14px">
+        ${whatsappPhone}
+        <button class="del-btn" onclick="deleteLiveOrder('${o._id}')">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// Filter buttons
+function setOrderFilter(f){
+  currentOrderFilter = f;
+  document.querySelectorAll('#order-filter-btns .filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.f === f);
+  });
+  loadLiveOrders();
+}
+
+// Update order status
+async function updateLiveOrderStatus(id, status){
+  const s = getSession();
+  try{
+    const res = await fetch(API+'/admin/orders/'+id+'/status', {
+      method: 'PATCH',
+      headers:{'Authorization':'Bearer '+s?.token, 'Content-Type':'application/json'},
+      body: JSON.stringify({ status })
+    });
+    if(res.ok) showToast('Status updated: '+status);
+    else showToast('Failed to update status');
+  } catch {
+    showToast('Could not connect to server');
+  }
+}
+
+// Delete an order
+async function deleteLiveOrder(id){
+  if(!confirm('Are you sure you want to delete this order?')) return;
+  const s = getSession();
+  try{
+    await fetch(API+'/admin/orders/'+id, {
+      method:'DELETE',
+      headers:{'Authorization':'Bearer '+s?.token}
+    });
+    showToast('Order deleted successfully');
+    loadLiveOrders();
+  } catch {
+    showToast('Failed to delete order');
+  }
+}
+
+// ── TOAST ──
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display='block';
+  setTimeout(() => t.style.display='none', 3000);
+}
+</script>
+</body>
+</html>
