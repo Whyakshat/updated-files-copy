@@ -121,3 +121,29 @@ If the backend is not running, the website automatically runs in **Demo Mode**:
 ✅ ESC key closes modals  
 ✅ Overlay click closes modals  
 ✅ Mobile responsive  
+
+---
+
+## 🛠️ Direct File Links for Senior Hiring Manager
+
+Here are the direct links to the new security middlewares, validation logic, schemas, test suites, and CI workflow configurations:
+
+- **Express Server & Middleware Integration**: [backend/server.js](https://github.com/Whyakshat/updated-files-copy/blob/main/backend/server.js)
+- **Rate Limiter Security Middleware**: [backend/middleware/rateLimiter.js](https://github.com/Whyakshat/updated-files-copy/blob/main/backend/middleware/rateLimiter.js)
+- **Request Validation & Sanitization Middleware**: [backend/middleware/validator.js](https://github.com/Whyakshat/updated-files-copy/blob/main/backend/middleware/validator.js)
+- **Menu Collection Mongoose Schema**: [backend/models/Menu.js](https://github.com/Whyakshat/updated-files-copy/blob/main/backend/models/Menu.js)
+- **Integration API Test Suite**: [backend/tests/api.test.js](https://github.com/Whyakshat/updated-files-copy/blob/main/backend/tests/api.test.js)
+- **GitHub Actions CI/CD Pipeline Workflow**: [.github/workflows/ci.yml](https://github.com/Whyakshat/updated-files-copy/blob/main/.github/workflows/ci.yml)
+- **README File**: [README.md](https://github.com/Whyakshat/updated-files-copy/blob/main/README.md)
+
+---
+
+## 🧪 Running Tests Locally
+
+To run the Jest API test suite locally:
+```bash
+cd backend
+npm install
+npm test
+```
+

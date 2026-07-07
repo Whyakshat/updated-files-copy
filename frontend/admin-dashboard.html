@@ -501,7 +501,9 @@ body{font-family:var(--font);background:var(--bg-dark);color:var(--text-main);mi
 <div class="toast" id="toast"></div>
 
 <script>
-const API = '/api';
+const API = window.location.origin.startsWith('file://') || window.location.port === '5500' || window.location.port === '5000' || window.location.port === '8000'
+  ? 'http://localhost:3001/api'
+  : '/api';
 
 // ── Auth Check ──
 function getSession(){
@@ -841,8 +843,43 @@ function deleteOrder(id){
   showToast('Order deleted');
 }
 
-// ── MENU ITEMS ──
-function addMenuItem(){
+// Keep track of loaded menu items globally for toggle and delete actions
+let currentMenuItems = [];
+
+async function renderMenu(){
+  const s = getSession();
+  const tbody = document.getElementById('menu-items-body');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:30px">Loading menu...</td></tr>';
+  
+  try {
+    const res = await fetch(API + '/menu', { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error('API failed');
+    const data = await res.json();
+    currentMenuItems = data.menu || [];
+  } catch (err) {
+    console.log('API Menu load failed, falling back to Local Storage:', err.message);
+    currentMenuItems = getMenuItems();
+  }
+
+  document.getElementById('menu-count').textContent = currentMenuItems.length + ' items';
+  tbody.innerHTML = currentMenuItems.map(m => {
+    const itemId = m._id || m.id;
+    return `
+      <tr>
+        <td><b>${m.name}</b><br><span style="font-size:11px;color:rgba(255,255,255,0.3)">${m.description || m.desc || ''}</span></td>
+        <td>${m.category || m.cat}</td>
+        <td>₹${m.price}</td>
+        <td><span class="status-badge ${m.status==='available'?'delivered':'cancelled'}">${m.status}</span></td>
+        <td>
+          <button class="del-btn" onclick="deleteMenuItem('${itemId}')">Delete</button>
+          <button onclick="toggleMenu('${itemId}')" style="background:rgba(255,167,195,0.08);border:1px solid rgba(255,167,195,0.2);color:var(--gold);padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;margin-left:6px">Toggle</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function addMenuItem(){
   const name = document.getElementById('menu-name').value.trim();
   const cat = document.getElementById('menu-cat').value;
   const price = document.getElementById('menu-price').value;
@@ -851,43 +888,122 @@ function addMenuItem(){
 
   if(!name || !price){ showToast('Name and price are required'); return; }
 
-  const menu = getMenuItems();
-  menu.push({ id: Date.now(), name, cat, price: parseInt(price), status, desc });
-  saveMenu(menu);
+  const s = getSession();
+  const payload = { name, category: cat, price: parseInt(price), status, description: desc };
+
+  try {
+    const res = await fetch(API + '/menu', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + s?.token
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(5000)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'API failed');
+    showToast('Menu item added successfully!');
+  } catch (err) {
+    console.log('API add failed, falling back to Local Storage:', err.message);
+    const menu = getMenuItems();
+    menu.push({ id: Date.now(), name, cat, price: parseInt(price), status, desc });
+    saveMenu(menu);
+    showToast('Menu item added (Local Fallback)!');
+  }
 
   ['menu-name','menu-price','menu-desc'].forEach(id => document.getElementById(id).value='');
-  showToast('Menu item added successfully!');
   renderMenu();
 }
 
-function renderMenu(){
-  const menu = getMenuItems();
-  document.getElementById('menu-count').textContent = menu.length + ' items';
-  const tbody = document.getElementById('menu-items-body');
-  tbody.innerHTML = menu.map(m => `
-    <tr>
-      <td><b>${m.name}</b><br><span style="font-size:11px;color:rgba(255,255,255,0.3)">${m.desc||''}</span></td>
-      <td>${m.cat}</td>
-      <td>₹${m.price}</td>
-      <td><span class="status-badge ${m.status==='available'?'delivered':'cancelled'}">${m.status}</span></td>
-      <td>
-        <button class="del-btn" onclick="deleteMenuItem(${m.id})">Delete</button>
-        <button onclick="toggleMenu(${m.id})" style="background:rgba(255,167,195,0.08);border:1px solid rgba(255,167,195,0.2);color:var(--gold);padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;margin-left:6px">Toggle</button>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function deleteMenuItem(id){
+async function deleteMenuItem(id){
   if(!confirm('Are you sure you want to delete this item?')) return;
-  saveMenu(getMenuItems().filter(m => m.id !== id));
-  renderMenu(); showToast('Item deleted');
+  const s = getSession();
+
+  // If ID starts with mem_ or is locally saved, it is local
+  const isMongoId = id && id.length === 24 && !id.startsWith('mem');
+
+  if (isMongoId) {
+    try {
+      const res = await fetch(API + '/menu/' + id, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + s?.token },
+        signal: AbortSignal.timeout(5000)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'API failed');
+      showToast('Item deleted successfully');
+    } catch (err) {
+      showToast('Delete failed: ' + err.message);
+      return;
+    }
+  } else {
+    // Local / Memory fallback delete
+    try {
+      await fetch(API + '/menu/' + id, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + s?.token },
+        signal: AbortSignal.timeout(5000)
+      });
+    } catch (err) {
+      // Ignore
+    }
+    const menu = getMenuItems();
+    saveMenu(menu.filter(m => String(m.id) !== String(id) && String(m._id) !== String(id)));
+    showToast('Item deleted');
+  }
+  renderMenu();
 }
 
-function toggleMenu(id){
-  const menu = getMenuItems();
-  const m = menu.find(m => m.id === id);
-  if(m){ m.status = m.status === 'available' ? 'unavailable' : 'available'; saveMenu(menu); renderMenu(); showToast('Item status updated'); }
+async function toggleMenu(id){
+  const s = getSession();
+  const m = currentMenuItems.find(item => String(item._id || item.id) === String(id));
+  if (!m) return;
+
+  const newStatus = m.status === 'available' ? 'unavailable' : 'available';
+  const isMongoId = id && id.length === 24 && !id.startsWith('mem');
+
+  if (isMongoId) {
+    try {
+      const res = await fetch(API + '/menu/' + id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + s?.token
+        },
+        body: JSON.stringify({ status: newStatus }),
+        signal: AbortSignal.timeout(5000)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'API failed');
+      showToast('Status updated successfully');
+    } catch (err) {
+      showToast('Update failed: ' + err.message);
+      return;
+    }
+  } else {
+    try {
+      await fetch(API + '/menu/' + id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + s?.token
+        },
+        body: JSON.stringify({ status: newStatus }),
+        signal: AbortSignal.timeout(5000)
+      });
+    } catch (err) {
+      // Ignore
+    }
+    const menu = getMenuItems();
+    const localItem = menu.find(item => String(item.id) === String(id) || String(item._id) === String(id));
+    if (localItem) {
+      localItem.status = newStatus;
+      saveMenu(menu);
+    }
+    showToast('Status updated');
+  }
+  renderMenu();
 }
 
 // ── USERS ──

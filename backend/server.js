@@ -7,7 +7,12 @@ const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 const Order = require('./models/Order');
 const Review = require('./models/Review');
+const Menu = require('./models/Menu');
 const fetch = require('node-fetch');
+
+// Middlewares
+const { apiLimiter, authLimiter } = require('./middleware/rateLimiter');
+const { validateRegister, validateLogin, validateOrder, validateReview } = require('./middleware/validator');
 
 const app = express();
 
@@ -20,15 +25,48 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static('../frontend'));
 
+// Apply rate limiter to all api routes
+app.use('/api/', apiLimiter);
+
+// ── Default Menu Items (for Seeding & Offline Fallback) ──
+const defaultMenuItems = [
+  { name: 'Executive Veg Thali', description: 'Paneer Sabzi, Dal Tadka, 2 Roti, Rice, Salad & Raita', category: 'Thali', price: 160, status: 'available' },
+  { name: 'Deluxe Paneer Thali', description: 'Kadhai Paneer, Dal Makhani, 3 Butter Roti, Jeera Rice, Sweet & Salad', category: 'Thali', price: 210, status: 'available' },
+  { name: 'Aloo Pyaz Paratha (2 Pcs)', description: 'Served with fresh butter, curd & pickle', category: 'Paratha', price: 90, status: 'available' },
+  { name: 'Paneer Lifafa Paratha (2 Pcs)', description: 'Stuffed paneer paratha with green chutney & curd', category: 'Paratha', price: 130, status: 'available' },
+  { name: 'Extra Butter Roti', description: 'Freshly baked whole wheat roti', category: 'Addon', price: 15, status: 'available' },
+  { name: 'Gulab Jamun (2 Pcs)', description: 'Warm, soft gulab jamuns in sugar syrup', category: 'Addon', price: 40, status: 'available' },
+  { name: 'Weekly Economy Plan', description: '7 Days - Single meal daily (4 Roti, Sabzi, Dal, Salad)', category: 'Weekly', price: 999, status: 'available' },
+  { name: 'Monthly Premium Plan', description: '30 Days - Lunch & Dinner (Paneer/Special dishes, Roti, Dal, Rice, Sweet)', category: 'Monthly', price: 3499, status: 'available' }
+];
+
 // ── In-Memory Fallback Store (jab MongoDB connect na ho) ──
 let inMemoryOrders = [];
+let inMemoryMenu = defaultMenuItems.map((item, idx) => ({ ...item, _id: 'mem_menu_' + idx }));
 let dbConnected = false;
+
 mongoose.connection.on('connected', () => { dbConnected = true; });
 mongoose.connection.on('disconnected', () => { dbConnected = false; });
 
+// Seed menu items helper
+const seedMenu = async () => {
+  try {
+    const count = await Menu.countDocuments();
+    if (count === 0) {
+      await Menu.insertMany(defaultMenuItems);
+      console.log('🌱 Database seeded with default menu items.');
+    }
+  } catch (err) {
+    console.error('Menu seeding failed:', err.message);
+  }
+};
+
 // ── MongoDB Connection ──
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected: freshplate DB'))
+  .then(() => {
+    console.log('✅ MongoDB connected: freshplate DB');
+    seedMenu();
+  })
   .catch(err => {
     console.error('❌ MongoDB connection failed:', err.message);
     console.log('💡 Make sure MongoDB chal raha hai ya .env mein MONGO_URI sahi hai');
@@ -71,17 +109,9 @@ const adminOnly = (req, res, next) => {
 // ═══════════════════════════════════════════════
 
 // POST /api/auth/register — Naya user register
-app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', authLimiter, validateRegister, async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
-
-    // Validation
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Name, email aur password required hain'
-      });
-    }
 
     // Cannot register with admin email
     if (email.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase()) {
@@ -128,16 +158,9 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // POST /api/auth/login — User login
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', authLimiter, validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email aur password daalen'
-      });
-    }
 
     // Do not allow admin to login from user portal
     if (email.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase()) {
@@ -194,22 +217,16 @@ app.post('/api/auth/login', async (req, res) => {
 //  ADMIN ROUTES
 // ═══════════════════════════════════════════════
 
-// POST /api/admin/login — Admin login (hardcoded credentials)
-app.post('/api/admin/login', async (req, res) => {
+// POST /api/admin/login — Admin login (credentials check)
+app.post('/api/admin/login', authLimiter, validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email aur password daalen'
-      });
-    }
-
-    // Hardcoded admin credentials check
+    // Admin credentials check using environment variable
+    const expectedAdminPassword = process.env.ADMIN_PASSWORD || 'akshat123';
     if (
       email.toLowerCase() !== process.env.ADMIN_EMAIL.toLowerCase() ||
-      password !== 'akshat123'
+      password !== expectedAdminPassword
     ) {
       return res.status(401).json({
         success: false,
@@ -335,7 +352,7 @@ app.get('/api/user/profile', protect, async (req, res) => {
 // ═══════════════════════════════════════════════
 
 // POST /api/orders — Website se order save karo (no auth needed)
-app.post('/api/orders', async (req, res) => {
+app.post('/api/orders', validateOrder, async (req, res) => {
   try {
     const { customerName, customerEmail, customerPhone, item, price, category } = req.body;
     if (!item) return res.status(400).json({ success: false, message: 'Item name required hai' });
@@ -449,12 +466,9 @@ app.get('/api/admin/order-stats', protect, adminOnly, async (req, res) => {
   }
 });
 // POST /api/reviews — Leave a review with AI sentiment analysis
-app.post('/api/reviews', async (req, res) => {
+app.post('/api/reviews', validateReview, async (req, res) => {
   try {
     const { customerName, customerEmail, text, rating } = req.body;
-    if (!text || !customerName) {
-      return res.status(400).json({ success: false, message: 'Name and review text are required' });
-    }
 
     // Call Pollinations AI for Sentiment Analysis
     const prompt = `Analyze the following customer review for a restaurant. Respond with ONLY ONE EXACT WORD from this list: [HAPPY, ANGRY, FOOD_QUALITY, NEUTRAL]. Do not include any other words or punctuation. Review: "${text}"`;
@@ -503,6 +517,109 @@ app.post('/api/reviews', async (req, res) => {
   } catch (err) {
     console.error('Review save error:', err.message);
     res.status(500).json({ success: false, message: 'Could not save review' });
+  }
+});
+
+// ═══════════════════════════════════════════════
+//  MENU ROUTES
+// ═══════════════════════════════════════════════
+
+// GET /api/menu — Saare menu items dekhein (public)
+app.get('/api/menu', async (req, res) => {
+  try {
+    if (dbConnected) {
+      const menu = await Menu.find().sort({ createdAt: 1 });
+      return res.json({ success: true, count: menu.length, menu });
+    } else {
+      // In-memory/fallback menu
+      return res.json({ success: true, count: inMemoryMenu.length, menu: inMemoryMenu, mode: 'memory' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Could not fetch menu' });
+  }
+});
+
+// POST /api/menu — Naya menu item add karein (admin only)
+app.post('/api/menu', protect, adminOnly, async (req, res) => {
+  try {
+    const { name, description, category, price, status } = req.body;
+    if (!name || price === undefined) {
+      return res.status(400).json({ success: false, message: 'Name and price required hain' });
+    }
+
+    const newItemData = {
+      name,
+      description: description || '',
+      category: category || 'Other',
+      price: Number(price),
+      status: status || 'available',
+      createdAt: new Date()
+    };
+
+    if (dbConnected) {
+      const item = await Menu.create(newItemData);
+      return res.status(201).json({ success: true, message: 'Menu item added successfully', item });
+    } else {
+      newItemData._id = 'mem_menu_' + Date.now();
+      inMemoryMenu.push(newItemData);
+      return res.status(201).json({ success: true, message: 'Menu item added (memory fallback)', item: newItemData });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.code === 11000 ? 'Item name pehle se exists karta hai' : 'Could not add menu item' });
+  }
+});
+
+// PATCH /api/menu/:id — Menu item update karein (admin only)
+app.patch('/api/menu/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const { name, description, category, price, status } = req.body;
+    const id = req.params.id;
+
+    if (dbConnected) {
+      const updateData = {};
+      if (name !== undefined) updateData.name = name;
+      if (description !== undefined) updateData.description = description;
+      if (category !== undefined) updateData.category = category;
+      if (price !== undefined) updateData.price = Number(price);
+      if (status !== undefined) updateData.status = status;
+
+      const item = await Menu.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+      if (!item) return res.status(404).json({ success: false, message: 'Item not found' });
+      return res.json({ success: true, message: 'Menu item updated', item });
+    } else {
+      const item = inMemoryMenu.find(m => m._id === id);
+      if (!item) return res.status(404).json({ success: false, message: 'Item not found' });
+      
+      if (name !== undefined) item.name = name;
+      if (description !== undefined) item.description = description;
+      if (category !== undefined) item.category = category;
+      if (price !== undefined) item.price = Number(price);
+      if (status !== undefined) item.status = status;
+
+      return res.json({ success: true, message: 'Menu item updated (memory)', item });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Could not update menu item' });
+  }
+});
+
+// DELETE /api/menu/:id — Menu item delete karein (admin only)
+app.delete('/api/menu/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (dbConnected) {
+      const item = await Menu.findByIdAndDelete(id);
+      if (!item) return res.status(404).json({ success: false, message: 'Item not found' });
+    } else {
+      const initialLength = inMemoryMenu.length;
+      inMemoryMenu = inMemoryMenu.filter(m => m._id !== id);
+      if (inMemoryMenu.length === initialLength) {
+        return res.status(404).json({ success: false, message: 'Item not found' });
+      }
+    }
+    res.json({ success: true, message: 'Menu item deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Could not delete menu item' });
   }
 });
 
@@ -560,10 +677,14 @@ app.get('/api/health', (req, res) => {
 
 // ── Start Server ──
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`\n🚀 Fresh Plate & Co Backend Server`);
-  console.log(`📡 Port: ${PORT}`);
-  console.log(`🔗 URL: http://localhost:${PORT}`);
-  console.log(`👑 Admin: ${process.env.ADMIN_EMAIL}`);
-  console.log(`\n💡 MongoDB URL: ${process.env.MONGO_URI}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 Fresh Plate & Co Backend Server`);
+    console.log(`📡 Port: ${PORT}`);
+    console.log(`🔗 URL: http://localhost:${PORT}`);
+    console.log(`👑 Admin: ${process.env.ADMIN_EMAIL}`);
+    console.log(`\n💡 MongoDB URL: ${process.env.MONGO_URI}`);
+  });
+}
+
+module.exports = app;

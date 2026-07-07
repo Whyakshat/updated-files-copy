@@ -9,6 +9,16 @@
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap"
     rel="stylesheet">
   <style>
+    @keyframes pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(76, 175, 80, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+    }
+    @keyframes pulse-orange {
+      0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(255, 152, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+    }
     :root {
       --black: #1d1272;
       --gold: #ffa7c3;
@@ -2691,7 +2701,13 @@
   CHANGE: Update the WhatsApp link below
 ============================================================ -->
   <nav id="navbar">
-    <a href="#hero" class="nav-logo">Fresh Plate <span>·</span> Co</a>
+    <a href="#hero" class="nav-logo" style="display: flex; align-items: center; gap: 10px;">
+      Fresh Plate <span style="margin: 0 -2px;">·</span> Co
+      <span id="connection-status-badge" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 9999px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; background: rgba(0,0,0,0.05); color: #666; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: #666; display: inline-block;"></span>
+        Connecting...
+      </span>
+    </a>
     
     <ul class="nav-links">
       <li><a href="#menu">Menu</a></li>
@@ -5160,7 +5176,143 @@ Be conversational, helpful, and enthusiastic about food. Keep replies concise (2
     (function () {
       // ── CONFIG ──
       // If backend is running, this URL will be used, otherwise demo mode
-      window.API_BASE = '/api';
+      window.API_BASE = window.location.origin.startsWith('file://') || window.location.port === '5500' || window.location.port === '5000' || window.location.port === '8000'
+        ? 'http://localhost:3001/api'
+        : '/api';
+
+      async function loadDynamicMenu() {
+        try {
+          const res = await fetch(window.API_BASE + '/menu');
+          if (!res.ok) return;
+          const data = await res.json();
+          if (!data.success || !data.menu || data.menu.length === 0) return;
+
+          const items = data.menu;
+
+          // 1. Populate Thalis
+          const thalis = items.filter(i => i.category === 'Thali');
+          if (thalis.length > 0) {
+            const thaliGrid = document.querySelector('#thali .thali-grid');
+            if (thaliGrid) {
+              thaliGrid.innerHTML = thalis.map(item => `
+                <div class="thali-card reveal animate-fade-in" style="opacity: 1; transform: translate(0, 0);">
+                  <div class="thali-img-wrap steam-wrap" style="background:linear-gradient(135deg,#2a5732,#50a060)">
+                    🍽️
+                  </div>
+                  ${item.status === 'unavailable' ? '<div class="thali-badge" style="background:#ef5350">Sold Out</div>' : '<div class="thali-badge">Freshly Made</div>'}
+                  <div class="thali-body">
+                    <h3>${item.name}</h3>
+                    <p>${item.description || 'Delivered fresh and hot.'}</p>
+                    <div class="thali-footer">
+                      <div class="thali-price">₹${item.price}</div>
+                      <button class="order-btn" ${item.status === 'unavailable' ? 'disabled style="background:#555;cursor:not-allowed;"' : `onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})"`}>
+                        ${item.status === 'unavailable' ? 'Sold Out' : 'Add to Cart'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `).join('');
+            }
+          }
+
+          // 2. Populate Parathas
+          const parathas = items.filter(i => i.category === 'Paratha');
+          if (parathas.length > 0) {
+            const parathaGrid = document.querySelector('#paratha .paratha-grid');
+            if (parathaGrid) {
+              parathaGrid.innerHTML = parathas.map(item => `
+                <div class="paratha-card reveal animate-fade-in" style="opacity: 1; transform: translate(0, 0);">
+                  <div class="paratha-img-wrap steam-wrap" style="background:linear-gradient(135deg,#6A4820,#C8A050)">
+                    🫓
+                  </div>
+                  ${item.status === 'unavailable' ? '<div class="thali-badge" style="background:#ef5350; top:10px; right:10px; position:absolute;">Sold Out</div>' : ''}
+                  <div class="paratha-body">
+                    <h3>${item.name}</h3>
+                    <p>${item.description || 'Warm and buttery stuffed paratha.'}</p>
+                    <div class="paratha-footer">
+                      <div class="paratha-price">₹${item.price}</div>
+                      <button class="order-btn" ${item.status === 'unavailable' ? 'disabled style="background:#555;cursor:not-allowed;"' : `onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})"`}>
+                        ${item.status === 'unavailable' ? 'Sold Out' : 'Add to Cart'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `).join('');
+            }
+          }
+
+          // 3. Populate Seasonal specials & Addons in .menu-grid
+          const seasonal = items.filter(i => i.category !== 'Thali' && i.category !== 'Paratha' && i.category !== 'Addon');
+          if (seasonal.length > 0) {
+            const menuGrid = document.querySelector('#seasonal .menu-grid');
+            if (menuGrid) {
+              menuGrid.innerHTML = seasonal.map(item => `
+                <div class="menu-card reveal animate-fade-in" style="opacity: 1; transform: translate(0, 0);">
+                  <div class="card-img-wrap steam-wrap" style="background:linear-gradient(135deg,#3a6832,#78c058)">
+                    🌿
+                  </div>
+                  ${item.status === 'unavailable' ? '<div class="thali-badge" style="background:#ef5350; top:10px; right:10px; position:absolute;">Sold Out</div>' : ''}
+                  <div class="card-body">
+                    <h3><span class="veg-dot"></span>${item.name}</h3>
+                    <p>${item.description || 'Delicious seasonal meal.'}</p>
+                    <div class="card-footer">
+                      <div class="price"><sup>₹</sup>${item.price}</div>
+                      <button class="order-btn" ${item.status === 'unavailable' ? 'disabled style="background:#555;cursor:not-allowed;"' : `onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})"`}>
+                        ${item.status === 'unavailable' ? 'Sold Out' : 'Add to Cart'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `).join('');
+            }
+          }
+
+          // 4. Populate Little Extras (Addons)
+          const addons = items.filter(i => i.category === 'Addon');
+          if (addons.length > 0) {
+            const addonsChips = document.querySelector('.addons-chips');
+            if (addonsChips) {
+              addonsChips.innerHTML = addons.map(item => `
+                <div class="addon-chip" style="cursor:pointer;" onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})">${item.name} <b>₹${item.price}</b></div>
+              `).join('');
+            }
+          }
+
+        } catch (err) {
+          console.error('Failed to render dynamic menu:', err.message);
+        }
+      }
+
+      async function updateStatusBadge() {
+        const badge = document.getElementById('connection-status-badge');
+        if (!badge) return;
+        try {
+          const res = await fetch(window.API_BASE + '/health', { signal: AbortSignal.timeout(3000) });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.db === 'Connected') {
+              badge.style.background = 'rgba(76, 175, 80, 0.1)';
+              badge.style.color = '#2e7d32';
+              badge.style.border = '1px solid rgba(76, 175, 80, 0.2)';
+              badge.innerHTML = `<span style="width: 6px; height: 6px; border-radius: 50%; background: #4caf50; display: inline-block; animation: pulse-green 2s infinite;"></span> Live Kitchen`;
+              await loadDynamicMenu();
+              return;
+            }
+          }
+        } catch (err) {
+          // Fallback
+        }
+        badge.style.background = 'rgba(255, 152, 0, 0.1)';
+        badge.style.color = '#ef6c00';
+        badge.style.border = '1px solid rgba(255, 152, 0, 0.2)';
+        badge.innerHTML = `<span style="width: 6px; height: 6px; border-radius: 50%; background: #ff9800; display: inline-block; animation: pulse-orange 2s infinite;"></span> Demo Mode`;
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        updateStatusBadge();
+        // Periodically verify connection status
+        setInterval(updateStatusBadge, 20000);
+      });
       
 
       // ── SESSION MANAGEMENT ──
